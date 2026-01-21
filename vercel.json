@@ -1,0 +1,5 @@
+{
+    "rewrites": [
+      { "source": "/the-green-room", "destination": "/the-green-room/index.html" }
+    ]
+  }

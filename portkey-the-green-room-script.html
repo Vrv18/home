@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PORTKEY — "The Green Room" | Video Script</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-card: #161616;
+            --bg-highlight: #1a1a1a;
+            --text-primary: #fafafa;
+            --text-secondary: #888888;
+            --text-muted: #555555;
+            --accent-green: #00ff88;
+            --accent-green-dim: #00ff8820;
+            --accent-orange: #ff6b35;
+            --accent-blue: #4d9fff;
+            --border-color: #222222;
+            --border-subtle: #1a1a1a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Noise overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header */
+        header {
+            padding: 80px 0 60px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-meta {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 24px;
+        }
+
+        .header-meta span {
+            color: var(--accent-green);
+        }
+
+        h1 {
+            font-family: 'Instrument Serif', serif;
+            font-size: clamp(48px, 8vw, 80px);
+            font-weight: 400;
+            line-height: 1.1;
+            margin-bottom: 24px;
+        }
+
+        h1 em {
+            font-style: italic;
+            color: var(--accent-green);
+        }
+
+        .subtitle {
+            font-size: 20px;
+            color: var(--text-secondary);
+            max-width: 600px;
+        }
+
+        /* Specs bar */
+        .specs-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 32px;
+            padding: 32px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .spec-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .spec-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .spec-value {
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        /* Section styles */
+        section {
+            padding: 60px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        section:last-child {
+            border-bottom: none;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .section-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--accent-green);
+        }
+
+        h2 {
+            font-family: 'Instrument Serif', serif;
+            font-size: 32px;
+            font-weight: 400;
+        }
+
+        h3 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        /* Arc cards */
+        .arc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .arc-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .arc-card:hover {
+            border-color: var(--accent-green);
+            transform: translateY(-2px);
+        }
+
+        .arc-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--accent-green);
+            margin-bottom: 8px;
+        }
+
+        .arc-title {
+            font-family: 'Instrument Serif', serif;
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .arc-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .arc-tone {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-subtle);
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .arc-tone span {
+            color: var(--accent-orange);
+        }
+
+        /* Script table */
+        .script-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .script-row {
+            display: grid;
+            grid-template-columns: 80px 1fr 1.2fr;
+            gap: 24px;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-subtle);
+            transition: background 0.2s ease;
+        }
+
+        .script-row:hover {
+            background: var(--bg-highlight);
+            margin: 0 -24px;
+            padding: 20px 24px;
+        }
+
+        .script-row.highlight {
+            background: var(--accent-green-dim);
+            margin: 0 -24px;
+            padding: 20px 24px;
+            border-left: 3px solid var(--accent-green);
+        }
+
+        .script-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .script-visual {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .script-dialogue {
+            font-size: 14px;
+        }
+
+        .script-dialogue strong {
+            color: var(--accent-blue);
+            font-weight: 500;
+        }
+
+        .script-dialogue em {
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .script-sound {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* Key lines */
+        .key-lines {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .key-line {
+            position: relative;
+            padding-left: 24px;
+        }
+
+        .key-line::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 8px;
+            height: 8px;
+            background: var(--accent-green);
+            border-radius: 50%;
+        }
+
+        .key-line-quote {
+            font-family: 'Instrument Serif', serif;
+            font-size: 24px;
+            font-style: italic;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .key-line-purpose {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Characters */
+        .characters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .character-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 32px;
+        }
+
+        .character-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            color: var(--accent-green);
+            margin-bottom: 8px;
+        }
+
+        .character-desc {
+            font-size: 15px;
+            margin-bottom: 16px;
+        }
+
+        .character-energy {
+            font-size: 13px;
+            color: var(--text-secondary);
+            padding-top: 16px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .character-energy span {
+            color: var(--accent-orange);
+        }
+
+        /* Production notes */
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 32px;
+        }
+
+        .note-block h4 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        .note-block p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .note-block ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .note-block li {
+            font-size: 14px;
+            color: var(--text-secondary);
+            padding-left: 16px;
+            position: relative;
+            margin-bottom: 8px;
+        }
+
+        .note-block li::before {
+            content: '—';
+            position: absolute;
+            left: 0;
+            color: var(--text-muted);
+        }
+
+        /* Runtime options */
+        .runtime-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .runtime-options {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .runtime-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .runtime-card.recommended {
+            border-color: var(--accent-green);
+            background: var(--accent-green-dim);
+        }
+
+        .runtime-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent-green);
+            margin-bottom: 8px;
+        }
+
+        .runtime-time {
+            font-family: 'Instrument Serif', serif;
+            font-size: 36px;
+            margin-bottom: 8px;
+        }
+
+        .runtime-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .runtime-detail {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Footer */
+        footer {
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            margin-bottom: 8px;
+        }
+
+        .footer-tagline {
+            font-family: 'Instrument Serif', serif;
+            font-size: 18px;
+            font-style: italic;
+            color: var(--accent-green);
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            .script-row {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .script-row:hover,
+            .script-row.highlight {
+                margin: 0 -16px;
+                padding: 16px;
+            }
+
+            header {
+                padding: 48px 0 40px;
+            }
+
+            section {
+                padding: 40px 0;
+            }
+
+            .specs-bar {
+                gap: 24px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; opacity: 0; }
+        .delay-2 { animation-delay: 0.2s; opacity: 0; }
+        .delay-3 { animation-delay: 0.3s; opacity: 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-meta">Portkey Announcement Video <span>// Final Script</span></div>
+            <h1>The <em>Green Room</em></h1>
+            <p class="subtitle">A 90-second video that introduces Portkey to the US tech ecosystem. The premise: A CTO calls an emergency meeting because nothing broke.</p>
+        </header>
+
+        <div class="specs-bar">
+            <div class="spec-item">
+                <span class="spec-label">Runtime</span>
+                <span class="spec-value">90-112 seconds</span>
+            </div>
+            <div class="spec-item">
+                <span class="spec-label">Distribution</span>
+                <span class="spec-value">LinkedIn, X</span>
+            </div>
+            <div class="spec-item">
+                <span class="spec-label">Audience</span>
+                <span class="spec-value">CTOs, Platform Engineers, Architects</span>
+            </div>
+            <div class="spec-item">
+                <span class="spec-label">Tone</span>
+                <span class="spec-value">Margin Call meets controlled absurdity</span>
+            </div>
+            <div class="spec-item">
+                <span class="spec-label">Tagline</span>
+                <span class="spec-value">AI that never breaks.</span>
+            </div>
+        </div>
+
+        <!-- Arc Overview -->
+        <section>
+            <div class="section-header">
+                <span class="section-number">01</span>
+                <h2>Story Arc</h2>
+            </div>
+            <div class="arc-grid">
+                <div class="arc-card">
+                    <div class="arc-time">0-12s</div>
+                    <div class="arc-title">The Hook</div>
+                    <div class="arc-desc">Fire alarm. Burning dustbin. CTO standing calmly. "There is no fire."</div>
+                    <div class="arc-tone">Tone: <span>Absurd, attention-grabbing</span></div>
+                </div>
+                <div class="arc-card">
+                    <div class="arc-time">12-32s</div>
+                    <div class="arc-title">The Setup</div>
+                    <div class="arc-desc">Green dashboard revealed. "Twelve teams. Four million users. Explain what went wrong."</div>
+                    <div class="arc-tone">Tone: <span>Tension, confusion</span></div>
+                </div>
+                <div class="arc-card">
+                    <div class="arc-time">32-62s</div>
+                    <div class="arc-title">The Interrogation</div>
+                    <div class="arc-desc">CTO questions the decision. "You handed the keys to a vendor I haven't vetted?"</div>
+                    <div class="arc-tone">Tone: <span>Skepticism, controlled intensity</span></div>
+                </div>
+                <div class="arc-card">
+                    <div class="arc-time">62-67s</div>
+                    <div class="arc-title">The Line</div>
+                    <div class="arc-desc">"You don't hear about the things that don't break."</div>
+                    <div class="arc-tone">Tone: <span>Gravitas — let it land</span></div>
+                </div>
+                <div class="arc-card">
+                    <div class="arc-time">67-87s</div>
+                    <div class="arc-title">The Release</div>
+                    <div class="arc-desc">"So what do you do now?" — "Build more things." — "Get out of my conference room."</div>
+                    <div class="arc-tone">Tone: <span>Warmth, resolution</span></div>
+                </div>
+                <div class="arc-card">
+                    <div class="arc-time">87-112s</div>
+                    <div class="arc-title">The Buttons</div>
+                    <div class="arc-desc">Real fire outside. "Now that's a real problem." Then founders: "Think he'll remember our name?"</div>
+                    <div class="arc-tone">Tone: <span>Absurd callback, self-aware</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Full Script -->
+        <section>
+            <div class="section-header">
+                <span class="section-number">02</span>
+                <h2>Full Script</h2>
+            </div>
+            
+            <h3>The Hook</h3>
+            <div class="script-table">
+                <div class="script-row">
+                    <div class="script-time">0-3s</div>
+                    <div class="script-visual">Office hallway. Fire alarm BLARING. Red lights flashing. People rushing.</div>
+                    <div class="script-dialogue"><span class="script-sound">Fire alarm sound.</span></div>
+                </div>
+                <div class="script-row">
+                    <div class="script-time">3-6s</div>
+                    <div class="script-visual">They rush toward conference room. Through glass: THE CTO (50s, suit jacket, no tie) standing calmly, holding a small metal dustbin. It's on fire.</div>
+                    <div class="script-dialogue"></div>
+                </div>
+                <div class="script-row">
+                    <div class="script-time">6-9s</div>
+                    <div class="script-visual">He sets it down. People file in, confused. He gestures for them to sit.</div>
+                    <div class="script-dialogue"></div>
+                </div>
+                <div class="script-row highlight">
+                    <div class="script-time">9-12s</div>
+                    <div class="script-visual"></div>
+                    <div class="script-dialogue"><strong>CTO:</strong> "There is no fire."</div>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 48px;">The Setup</h3>
+            <div class="script-table">
+                <div class="script-row">
+                    <div class="script-time">12-14s</div>
+                    <div class="script-visual">He lets that land. Turns laptop toward them. On screen: dashboard. ALL GREEN.</div>
+                    <div class="script-dialogue"></div>
+                </div>
+                <div class="script-row highlight">
+                    <div class="script-time">14-18s</div>
+                    <div class="script-visual"></div>
+                    <div class="script-dialogue"><strong>CTO:</strong> "This week, we pushed AI into three new product lines. Twelve teams. Four million users."</div>
+                </div>
+                <div class="script-row highlight">
+                    <div class="script-time">18-21s</div>
+                    <div class="script-visual">Beat. He looks around the room.</div>
+                    <div class="script-dialogue"><strong>CTO:</strong> "Explain to me what went wrong."</div>
+                </div>
+                <div class="script-row">
+                    <div class="script-time">21-24s</div>
+                    <div class="script-visual">Silence. People exchange glances.</div>
+                    <div class="script-dialogue"></div>
+                </div>
+                <div class="script-row">
+                    <div class="script-time">24-27s</div>
+                    <div class="script-visual">ENGINEER 1 (30s, hoodie) speaks carefully.</div>
+                    <div class="script-dialogue"><strong>ENGINEER 1:</strong> "Nothing... went wrong."</div>
+                </div>
+                <div class="script-row">
+                    <div class="script-time">27-30s</div>
+                    <div class="script-visual">The CTO holds on him.</div>
+                    <div class="script-dialogue"><strong>CTO:</strong> "Nothing."</div>
+                </div>
+                <div class="script-row">
+                    <div class="script-time">30-32s</div>
+                    <div class="script-visual"></div>
+                    <div class="script-dialogue"><strong>ENGINEER 1:</strong> "Nothing."</div>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 48px;">The Interrogation</h3>
+            <div class="script-table">
+                <div class="script-row">
+                    <div class="script-time">32-36s</div>
+                    <div class="script-visual">The CTO sits. Folds his hands. Measured, not angry.</div>
+                    <div class="script-dialogue"><strong>CTO:</strong> "Then someone explain why my entire AI infrastructure is running perfectly and I don't know how."</div>
+                </div>
+                <div class="script-row">
+                    <div class="script-time">36-40s</div>
+                    <div class="script-visual">ENGINEER 2 leans forward.</div>
+                    <div class="script-dialogue"><strong>ENGINEER 2:</strong> "We put a gateway in the middle."</div>
+                </div>
+                <div class="script-row">
+                    <div class="script-time">40-42s</div>
+                    <div class="script-visual"></div>
+                    <div class="script-dialogue"><strong>CTO:</strong> "A gateway."</div>
+                </div>
+                <div class="script-row highlight">
+                    <div class="script-time">42-48s</div>
+                    <div class="script-visual"></div>
+                    <div class="script-dialogue"><strong>ENGINEER 2:</strong> "It handles the failovers. The retries. The caching. Sixteen hundred models. We don't touch it anymore."</div>
+                </div>
+                <div class="script-row highlight">
+                    <div class="script-time">48-52s</div>
+                    <div class="script-visual">The CTO's tone sharpens slightly. Still controlled.</div>
+                    <div class="script-dialogue"><strong>CTO:</strong> "You handed the keys to our entire AI infrastructure to a vendor I haven't vetted?"</div>
+                </div>
+                <div class="script-row">
+                    <div class="script-time">52-55s</div>
+                    <div class="script-visual">Beat. Engineer 1, calm, not defensive:</div>
+                    <div class="script-dialogue"><strong>ENGINEER 1:</strong> "Yes."</div>
+                </div>
+                <div class="script-row">
+                    <div class="script-time">55-57s</div>
+                    <div class="script-visual">The CTO waits for more.</div>
+                    <div class="script-dialogue"><strong>CTO:</strong> "Who is the vendor?"</div>
+                </div>
+                <div class="script-row highlight">
+                    <div class="script-time">57-59s</div>
+                    <div class="script-visual"></div>
+                    <div class="script-dialogue"><strong>ENGINEER 1:</strong> "Portkey."</div>
+                </div>
+                <div class="script-row highlight">
+                    <div class="script-time">59-62s</div>
+                    <div class="script-visual">Beat.</div>
+                    <div class="script-dialogue"><strong>CTO:</strong> "Never heard of them."</div>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 48px;">The Line</h3>
+            <div class="script-table">
+                <div class="script-row highlight">
+                    <div class="script-time">62-67s</div>
+                    <div class="script-visual">Engineer 1 meets his eyes. Simply:</div>
+                    <div class="script-dialogue"><strong>ENGINEER 1:</strong> "That's the point." <em>(beat)</em> "You don't hear about the things that don't break."</div>
+                </div>
+                <div class="script-row">
+                    <div class="script-time">67-70s</div>
+                    <div class="script-visual">The CTO holds. No comeback. Looks at green dashboard. Then back at them.</div>
+                    <div class="script-dialogue"><span class="script-sound">Silence.</span></div>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 48px;">Validation</h3>
+            <div class="script-table">
+                <div class="script-row">
+                    <div class="script-time">70-74s</div>
+                    <div class="script-visual">Engineer 2, filling silence with facts, not defensiveness:</div>
+                    <div class="script-dialogue"><strong>ENGINEER 2:</strong> "They processed eighty trillion tokens last year. Ninety-three million in API spend. Lightspeed and Elevation just backed them."</div>
+                </div>
+                <div class="script-row highlight">
+                    <div class="script-time">74-76s</div>
+                    <div class="script-visual"></div>
+                    <div class="script-dialogue"><strong>ENGINEER 1:</strong> "They're built to not break. It's like Cloudflare, but for models."</div>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 48px;">The Release</h3>
+            <div class="script-table">
+                <div class="script-row highlight">
+                    <div class="script-time">76-79s</div>
+                    <div class="script-visual">The CTO exhales. A small nod. Almost to himself.</div>
+                    <div class="script-dialogue"><strong>CTO:</strong> <em>(quieter)</em> "So we built something that just... works."</div>
+                </div>
+                <div class="script-row">
+                    <div class="script-time">79-81s</div>
+                    <div class="script-visual">Beat. He looks at the team.</div>
+                    <div class="script-dialogue"><strong>CTO:</strong> "So what do you do now?"</div>
+                </div>
+                <div class="script-row highlight">
+                    <div class="script-time">81-84s</div>
+                    <div class="script-visual">Engineer 1, small smile:</div>
+                    <div class="script-dialogue"><strong>ENGINEER 1:</strong> "Build more things, I guess."</div>
+                </div>
+                <div class="script-row highlight">
+                    <div class="script-time">84-87s</div>
+                    <div class="script-visual">The CTO nods. The faintest warmth.</div>
+                    <div class="script-dialogue"><strong>CTO:</strong> "Then get out of my conference room."</div>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 48px;">Button #1: The Real Fire</h3>
+            <div class="script-table">
+                <div class="script-row">
+                    <div class="script-time">87-89s</div>
+                    <div class="script-visual">They start to stand—</div>
+                    <div class="script-dialogue"></div>
+                </div>
+                <div class="script-row">
+                    <div class="script-time">89-91s</div>
+                    <div class="script-visual"><strong>THE FIRE ALARM BLARES AGAIN.</strong></div>
+                    <div class="script-dialogue"><span class="script-sound">Alarm sound.</span></div>
+                </div>
+                <div class="script-row">
+                    <div class="script-time">91-93s</div>
+                    <div class="script-visual">Everyone freezes. The CTO's eyes light up — finally, a real problem?</div>
+                    <div class="script-dialogue"></div>
+                </div>
+                <div class="script-row">
+                    <div class="script-time">93-95s</div>
+                    <div class="script-visual">They turn toward glass wall. Outside: <strong>ACTUAL FLAMES. Real fire. Different building.</strong></div>
+                    <div class="script-dialogue"><span class="script-sound">Silence under alarm.</span></div>
+                </div>
+                <div class="script-row highlight">
+                    <div class="script-time">95-97s</div>
+                    <div class="script-visual">The CTO, deadpan:</div>
+                    <div class="script-dialogue"><strong>CTO:</strong> "Now <em>that's</em> a real problem."</div>
+                </div>
+                <div class="script-row">
+                    <div class="script-time">97-102s</div>
+                    <div class="script-visual"><strong>CUT TO BLACK.</strong> Logo. Clean. Minimal.</div>
+                    <div class="script-dialogue"><strong>SUPER:</strong> PORTKEY — AI that never breaks.</div>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 48px;">Button #2: The Founders</h3>
+            <div class="script-table">
+                <div class="script-row">
+                    <div class="script-time">102-105s</div>
+                    <div class="script-visual">Different location. Casual. The two FOUNDERS sit watching this ad on a laptop. It ends.</div>
+                    <div class="script-dialogue"><span class="script-sound">Ambient room tone.</span></div>
+                </div>
+                <div class="script-row highlight">
+                    <div class="script-time">105-108s</div>
+                    <div class="script-visual"></div>
+                    <div class="script-dialogue"><strong>FOUNDER 1:</strong> "Think he'll remember our name?"</div>
+                </div>
+                <div class="script-row">
+                    <div class="script-time">108-110s</div>
+                    <div class="script-visual">Founder 2 shrugs.</div>
+                    <div class="script-dialogue"></div>
+                </div>
+                <div class="script-row">
+                    <div class="script-time">110-112s</div>
+                    <div class="script-visual"><strong>CUT TO BLACK.</strong> Logo. URL.</div>
+                    <div class="script-dialogue"><strong>SUPER:</strong> PORTKEY — portkey.ai</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Key Lines -->
+        <section>
+            <div class="section-header">
+                <span class="section-number">03</span>
+                <h2>Key Lines</h2>
+            </div>
+            <div class="key-lines">
+                <div class="key-line">
+                    <div class="key-line-quote">"There is no fire."</div>
+                    <div class="key-line-purpose">Hook payoff — the emergency is the absence of emergency</div>
+                </div>
+                <div class="key-line">
+                    <div class="key-line-quote">"Twelve teams. Four million users. Explain to me what went wrong."</div>
+                    <div class="key-line-purpose">Stakes — CTO knows what should have broken</div>
+                </div>
+                <div class="key-line">
+                    <div class="key-line-quote">"We put a gateway in the middle. It handles the failovers, the retries, the caching... we don't touch it."</div>
+                    <div class="key-line-purpose">Technical credibility — specific but accessible</div>
+                </div>
+                <div class="key-line">
+                    <div class="key-line-quote">"You handed the keys to our entire AI infrastructure to a vendor I haven't vetted?"</div>
+                    <div class="key-line-purpose">Real tension — this is what a CTO would actually say</div>
+                </div>
+                <div class="key-line">
+                    <div class="key-line-quote">"Never heard of them."</div>
+                    <div class="key-line-purpose">Perfect setup — earns the skepticism the audience shares</div>
+                </div>
+                <div class="key-line">
+                    <div class="key-line-quote">"You don't hear about the things that don't break."</div>
+                    <div class="key-line-purpose"><strong>THE LINE.</strong> This is the ad. Everything else is setup for this moment.</div>
+                </div>
+                <div class="key-line">
+                    <div class="key-line-quote">"It's like Cloudflare, but for models."</div>
+                    <div class="key-line-purpose">Instant positioning — borrows trust from known infrastructure</div>
+                </div>
+                <div class="key-line">
+                    <div class="key-line-quote">"Build more things, I guess." / "Get out of my conference room."</div>
+                    <div class="key-line-purpose">Emotional release — warm, human, earned</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Characters -->
+        <section>
+            <div class="section-header">
+                <span class="section-number">04</span>
+                <h2>Characters</h2>
+            </div>
+            <div class="characters-grid">
+                <div class="character-card">
+                    <div class="character-name">THE CTO</div>
+                    <div class="character-desc">50s, male, suit jacket no tie. Authoritative but not loud. Skeptical but not hostile. The reasonable one asking hard questions.</div>
+                    <div class="character-energy">Energy: <span>Controlled intensity. Never yells. Never mugs. The audience surrogate.</span></div>
+                </div>
+                <div class="character-card">
+                    <div class="character-name">ENGINEER 1</div>
+                    <div class="character-desc">30s, hoodie. The one who made the call to use Portkey. Has to defend the decision.</div>
+                    <div class="character-energy">Energy: <span>Calm confidence. Not nervous. Not arrogant. Delivers the killer line.</span></div>
+                </div>
+                <div class="character-card">
+                    <div class="character-name">ENGINEER 2</div>
+                    <div class="character-desc">30s, slightly more polished. The technical explainer who provides the "how."</div>
+                    <div class="character-energy">Energy: <span>Matter-of-fact. Provides stats and technical details.</span></div>
+                </div>
+                <div class="character-card">
+                    <div class="character-name">THE FOUNDERS</div>
+                    <div class="character-desc">Portkey founders. Casual, self-aware. Appear only in the button scene.</div>
+                    <div class="character-energy">Energy: <span>Human, warm, self-deprecating. The shrug is genuine.</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Production Notes -->
+        <section>
+            <div class="section-header">
+                <span class="section-number">05</span>
+                <h2>Production Notes</h2>
+            </div>
+            <div class="notes-grid">
+                <div class="note-block">
+                    <h4>The Burning Dustbin (0-9s)</h4>
+                    <ul>
+                        <li>Small metal office trash can, controlled flame (paper burning)</li>
+                        <li>CTO holds it calmly, sets it down like it's nothing</li>
+                        <li>Visual absurdity: fire alarm for a tiny controlled fire</li>
+                    </ul>
+                </div>
+                <div class="note-block">
+                    <h4>The Dashboard</h4>
+                    <ul>
+                        <li>Clean, modern observability UI (Datadog/Grafana feel)</li>
+                        <li>Unnaturally, completely green — no yellow, no red</li>
+                        <li>Should feel almost unsettling in its perfection</li>
+                    </ul>
+                </div>
+                <div class="note-block">
+                    <h4>The CTO's Physicality</h4>
+                    <ul>
+                        <li>Sits when asking questions — not slamming tables</li>
+                        <li>Folds hands. Leans back. Controlled.</li>
+                        <li>"Get out" delivered with faintest smile — warmth, not dismissal</li>
+                    </ul>
+                </div>
+                <div class="note-block">
+                    <h4>The Real Fire (93-97s)</h4>
+                    <ul>
+                        <li>Visible through glass wall — another building, actual flames</li>
+                        <li>Surprising but not alarming — a visual punchline</li>
+                        <li>"Now that's a real problem" is dry, not panicked</li>
+                    </ul>
+                </div>
+                <div class="note-block">
+                    <h4>Founders Button (102-112s)</h4>
+                    <ul>
+                        <li>Completely different energy from main ad</li>
+                        <li>Casual setting — actual office, couch, somewhere human</li>
+                        <li>The shrug is genuine — not a bit, just real</li>
+                    </ul>
+                </div>
+                <div class="note-block">
+                    <h4>The Core Dynamic</h4>
+                    <p>The absurdity isn't in the CTO — it's in the situation. He's the straight man. The comedy comes from the gap between his earned skepticism and the engineers' unbothered calm.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Runtime Options -->
+        <section>
+            <div class="section-header">
+                <span class="section-number">06</span>
+                <h2>Runtime Options</h2>
+            </div>
+            <div class="runtime-options">
+                <div class="runtime-card recommended">
+                    <div class="runtime-badge">Recommended</div>
+                    <div class="runtime-time">112s</div>
+                    <div class="runtime-label">Full Version</div>
+                    <div class="runtime-detail">Both buttons included. Complete story arc with founders callback.</div>
+                </div>
+                <div class="runtime-card">
+                    <div class="runtime-badge">Standard</div>
+                    <div class="runtime-time">99s</div>
+                    <div class="runtime-label">Without Founders</div>
+                    <div class="runtime-detail">Ends on "AI that never breaks" after real fire button.</div>
+                </div>
+                <div class="runtime-card">
+                    <div class="runtime-badge">Tight</div>
+                    <div class="runtime-time">87s</div>
+                    <div class="runtime-label">No Buttons</div>
+                    <div class="runtime-detail">Ends on "Get out of my conference room" + logo.</div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="footer-logo">PORTKEY</div>
+            <div class="footer-tagline">AI that never breaks.</div>
+        </footer>
+    </div>
+</body>
+</html>

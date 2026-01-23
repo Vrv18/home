@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vrushank Vyas</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Merriweather:ital,wght@0,300;0,700;1,300&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Rothko / Indic Palette */
+            --bg-color: #F5F5F0; /* Soft off-white like canvas or old paper */
+            --text-color: #1a1a1a;
+            --accent-orange: #C65D3B; /* Burnt Orange - reminiscent of saffron/clay */
+            --accent-blue: #2C3E50;   /* Deep Indigo/Grey - reminiscent of ink/night */
+            --subtle-grey: #666;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* The Rothko Effect - subtle background wash */
+        .color-field-top {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 12px;
+            background: var(--accent-orange);
+            z-index: 10;
+        }
+        
+        .color-field-bottom {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: var(--accent-blue);
+            z-index: 10;
+        }
+
+        main {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 120px 24px 60px;
+            flex-grow: 1;
+        }
+
+        h1 {
+            font-family: 'Merriweather', serif;
+            font-weight: 700;
+            font-size: 2.5rem;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .location {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: var(--accent-orange);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 3rem;
+            font-weight: 600;
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 300;
+            color: #333;
+        }
+
+        .identity-block {
+            margin-bottom: 4rem;
+        }
+
+        .identity-block p {
+            margin-bottom: 0.8rem;
+        }
+
+        /* The "Sahaj Bano" Section */
+        .mantra-section {
+            margin: 4rem 0;
+            padding: 2rem 0;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .mantra {
+            font-family: 'Merriweather', serif;
+            font-style: italic;
+            font-size: 1.8rem;
+            color: var(--accent-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .attribution {
+            font-size: 0.85rem;
+            color: var(--subtle-grey);
+        }
+
+        /* List styles for interests */
+        ul {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            color: #444;
+            display: flex;
+            align-items: center;
+        }
+
+        li::before {
+            content: "—";
+            color: var(--accent-orange);
+            margin-right: 10px;
+        }
+
+        a {
+            color: var(--text-color);
+            text-decoration: none;
+            border-bottom: 1px solid var(--accent-orange);
+            transition: all 0.2s ease;
+        }
+
+        a:hover {
+            background-color: var(--accent-orange);
+            color: white;
+            border-bottom-color: transparent;
+        }
+
+        .footer {
+            margin-top: auto;
+            padding-top: 2rem;
+            font-size: 0.9rem;
+        }
+
+        /* Subtle Fade In Animation */
+        .fade-in {
+            animation: fadeIn 1.2s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            main { padding-top: 80px; }
+            .mantra { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="color-field-top"></div>
+
+    <main class="fade-in">
+        <header>
+            <h1>Vrushank Vyas</h1>
+            <div class="location">Bengaluru, India</div>
+        </header>
+
+        <section class="identity-block">
+            <p>Building <strong>Portkey.ai</strong>. Navigating the chaos of LLMOps and Enterprise AI.</p>
+            <p>I live in the intersection of systems and stories. Currently scaling GTM from India to the world.</p>
+            <p>Husband to a <a href="https://devopsforpms.substack.com/" target="_blank">writer</a>. Father to Advaita.</p>
+        </section>
+
+        <section class="mantra-section">
+            <div class="mantra">"Sahaj bano."</div>
+            <div class="attribution">Ravindra Sharma (Guruji), Kalashram</div>
+        </section>
+
+        <section>
+            <p><strong>Influences & Inquiries</strong></p>
+            <ul>
+                <li>The silence of Hoysala stone</li>
+                <li>The restlessness of Kerouac</li>
+                <li>The idealism of The West Wing</li>
+                <li>Shruti, Smriti, and the logic of Vedanta</li>
+                <li>The colors of Rothko</li>
+            </ul>
+        </section>
+
+        <footer class="footer">
+            <p>
+                <a href="https://x.com/retrovrv" target="_blank">@retrovrv</a>
+            </p>
+        </footer>
+    </main>
+
+    <div class="color-field-bottom"></div>
+
+</body>
+</html>

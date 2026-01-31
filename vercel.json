@@ -1,5 +1,6 @@
 {
     "rewrites": [
-      { "source": "/the-green-room", "destination": "/the-green-room/index.html" }
+      { "source": "/the-green-room", "destination": "/the-green-room/index.html" },
+      { "source": "/hyd-east", "destination": "/hyd-east/index.html" }
     ]
   }

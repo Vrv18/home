@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project East: Strategic Real Estate Acquisition Plan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Lato', sans-serif; background-color: #fdfcf8; color: #2d3748; }
+        h1, h2, h3, h4 { font-family: 'Playfair Display', serif; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin: 0 auto; height: 300px; }
+        @media (min-width: 768px) { .chart-container { height: 350px; } }
+        .tab-active { border-bottom: 2px solid #b45309; color: #78350f; font-weight: 700; }
+        .tab-inactive { color: #6b7280; }
+        .card { background-color: white; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid #f3f4f6; transition: transform 0.2s; }
+        .card:hover { transform: translateY(-2px); shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .timeline-line { position: absolute; left: 50%; transform: translateX(-50%); width: 2px; height: 100%; background-color: #e5e7eb; z-index: 0; }
+        .timeline-dot { width: 16px; height: 16px; background-color: #fff; border: 4px solid #b45309; border-radius: 50%; z-index: 10; position: relative; }
+    </style>
+    <!-- Chosen Palette: Warm Neutrals (Background: #fdfcf8) with Earthy Amber (#b45309) accents and Slate text for readability. Professional, calm, strategic. -->
+    
+    <!-- Application Structure Plan: 
+         1. Executive Dashboard: High-level summary of the 'Mission' (Budget, Timeline, Philosophy).
+         2. Strategic Analysis (Macro): Interactive comparison of East vs West Hyderabad dynamics using charts.
+         3. Micro-Market Selector: A grid/map interface to select specific East areas (Nagole, Uppal, etc.) and view density/amenity scores.
+         4. The "Value Hunter" Tool: A calculator demonstrating the "Worst House/Best Locality" math.
+         5. Execution Calendar: A vertical interactive timeline detailing steps from Now to Possession (Q1 2027).
+         Rationale: This structure moves from the 'Why' (Strategy) to the 'Where' (Location) to the 'How' (Execution), mirroring a logical investment decision process.
+    -->
+    
+    <!-- Visualization & Content Choices:
+         - Market Compare: Bar Chart (Chart.js) to contrast Price per Sqft & Appreciation potential. Goal: Validate "East" choice.
+         - Budget Allocation: Doughnut Chart (Chart.js) to break down the 1.8Cr limit (Base vs Registration vs Interiors). Goal: Financial clarity.
+         - Locality Matrix: Interactive Cards using JS. Goal: Filter areas based on "Walkability" and "Density" preference.
+         - Timeline: Custom HTML/CSS/JS vertical flow. Goal: Project management of the purchase lifecycle.
+         - NO SVG/Mermaid used. All icons are unicode or CSS shapes.
+    -->
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="antialiased">
+
+    <!-- Header / Mission Control -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold text-amber-900">Project East Command</h1>
+                <p class="text-xs text-gray-500 tracking-widest uppercase">Strategic Real Estate Acquisition • Hyderabad</p>
+            </div>
+            <div class="hidden md:flex space-x-6 text-sm">
+                <div class="text-right">
+                    <span class="block text-gray-400 text-xs">Target Budget</span>
+                    <span class="font-bold">₹1.5 - 1.8 Cr</span>
+                </div>
+                <div class="text-right">
+                    <span class="block text-gray-400 text-xs">Timeline</span>
+                    <span class="font-bold">Purchase Q3 '26</span>
+                </div>
+                <div class="text-right">
+                    <span class="block text-gray-400 text-xs">Philosophy</span>
+                    <span class="font-bold text-amber-700">Value Investing</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="bg-[#f8f5f2] border-b border-gray-200">
+        <div class="container mx-auto px-4 overflow-x-auto">
+            <div class="flex space-x-8 min-w-max" id="nav-container">
+                <button onclick="switchTab('dashboard')" class="py-4 text-sm focus:outline-none tab-active" id="btn-dashboard">Mission Dashboard</button>
+                <button onclick="switchTab('macro')" class="py-4 text-sm focus:outline-none tab-inactive" id="btn-macro">Macro Analysis</button>
+                <button onclick="switchTab('micro')" class="py-4 text-sm focus:outline-none tab-inactive" id="btn-micro">Locality Recon</button>
+                <button onclick="switchTab('financials')" class="py-4 text-sm focus:outline-none tab-inactive" id="btn-financials">Financial Strategy</button>
+                <button onclick="switchTab('calendar')" class="py-4 text-sm focus:outline-none tab-inactive" id="btn-calendar">Execution Calendar</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8 pb-20">
+
+        <!-- VIEW: DASHBOARD -->
+        <section id="view-dashboard" class="animate-fade-in block">
+            <div class="max-w-4xl mx-auto">
+                <div class="mb-8">
+                    <h2 class="text-3xl mb-4 text-gray-800">Executive Summary</h2>
+                    <p class="text-lg text-gray-600 leading-relaxed">
+                        The objective is to secure a high-value 3 BHK residential asset in East Hyderabad by Q3 2026. 
+                        The strategy leverages the geopolitical shift towards the East (LOOK EAST policy), 
+                        capitalizing on lower entry valuations compared to the West, while adhering to strict density and amenity proximity criteria.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                    <div class="card p-6 border-l-4 border-amber-600">
+                        <h3 class="text-gray-500 text-sm uppercase tracking-wider mb-2">Primary Target</h3>
+                        <p class="text-2xl font-bold text-gray-800">3 BHK Flat</p>
+                        <p class="text-sm text-gray-600 mt-2">Possession by Dec '26</p>
+                    </div>
+                    <div class="card p-6 border-l-4 border-amber-600">
+                        <h3 class="text-gray-500 text-sm uppercase tracking-wider mb-2">Core Filter</h3>
+                        <p class="text-2xl font-bold text-gray-800">High Density</p>
+                        <p class="text-sm text-gray-600 mt-2">Markets/Amenities &lt; 2km</p>
+                    </div>
+                    <div class="card p-6 border-l-4 border-amber-600">
+                        <h3 class="text-gray-500 text-sm uppercase tracking-wider mb-2">Investment Thesis</h3>
+                        <p class="text-2xl font-bold text-gray-800">Worst House</p>
+                        <p class="text-sm text-gray-600 mt-2">In the Best Locality</p>
+                    </div>
+                </div>
+
+                <!-- Strategic Readiness Indicator -->
+                <div class="card p-6 bg-white">
+                    <h3 class="text-lg font-bold mb-4">Strategic Readiness Assessment</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-sm font-medium text-gray-700">Market Research Depth</span>
+                                <span class="text-sm font-medium text-amber-700">30%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-amber-600 h-2.5 rounded-full" style="width: 30%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-sm font-medium text-gray-700">Financial Allocation (₹1.8 Cr)</span>
+                                <span class="text-sm font-medium text-green-700">100% Ready</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-green-600 h-2.5 rounded-full" style="width: 100%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-500 italic">
+                        Current phase: Initial Structural Analysis & Research Plan Formulation.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: MACRO ANALYSIS -->
+        <section id="view-macro" class="hidden">
+            <div class="max-w-5xl mx-auto">
+                <div class="mb-6">
+                    <h2 class="text-3xl mb-2 text-gray-800">Macro-Structural Analysis</h2>
+                    <p class="text-gray-600">Why East Hyderabad? Analyzing geopolitical incentives and economic value drivers against the saturated West.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <!-- Chart Column -->
+                    <div class="card p-6">
+                        <h3 class="font-bold text-gray-700 mb-4 text-center">Price Appreciation Potential (East vs. West)</h3>
+                        <div class="chart-container">
+                            <canvas id="macroChart"></canvas>
+                        </div>
+                        <p class="text-xs text-center text-gray-400 mt-2">Projected CAGR based on infrastructure timeline (Metro Ph-2, Flyovers)</p>
+                    </div>
+                    
+                    <!-- Text Analysis Column -->
+                    <div class="space-y-6">
+                        <div class="card p-5">
+                            <h4 class="font-bold text-amber-800 mb-2">1. The "Look East" Policy</h4>
+                            <p class="text-sm text-gray-600">
+                                The Telangana government's strategic push to decongest the West (Hitech City/Gachibowli) has led to significant IT incentives in the East (Uppal/Pocharam). 
+                                <strong>Impact:</strong> Institutional buyers are moving in, creating a rental yield floor.
+                            </p>
+                        </div>
+                        <div class="card p-5">
+                            <h4 class="font-bold text-amber-800 mb-2">2. Connectivity Arbitrage</h4>
+                            <p class="text-sm text-gray-600">
+                                Unlike the West which struggles with gridlock, the East has mature Metro connectivity (Red Line) and simpler access to the ORR.
+                                <strong>Strategy:</strong> Buy near Metro nodes (Nagole/LB Nagar) where density ensures lifelong demand.
+                            </p>
+                        </div>
+                        <div class="card p-5">
+                            <h4 class="font-bold text-amber-800 mb-2">3. The Density Factor</h4>
+                            <p class="text-sm text-gray-600">
+                                Your requirement for "Vegetables within 1km" points to established social infrastructure. The East is culturally distinct—more "settled," higher owner-occupancy rates, and less transient than the West.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: MICRO LOCALITY -->
+        <section id="view-micro" class="hidden">
+            <div class="max-w-6xl mx-auto">
+                <div class="mb-8 text-center">
+                    <h2 class="text-3xl mb-2 text-gray-800">Locality Reconnaissance</h2>
+                    <p class="text-gray-600 max-w-2xl mx-auto">
+                        Deep dive into East Hyderabad micro-markets. We are filtering for established density, walkability to amenities, and 3BHK inventory within the ₹1.5-1.8 Cr band.
+                    </p>
+                </div>
+
+                <!-- Filters -->
+                <div class="flex flex-wrap justify-center gap-4 mb-8">
+                    <button onclick="filterLocality('all')" class="px-4 py-2 rounded-full bg-gray-800 text-white text-sm hover:bg-gray-700 transition">All East Zones</button>
+                    <button onclick="filterLocality('prime')" class="px-4 py-2 rounded-full bg-amber-100 text-amber-800 text-sm hover:bg-amber-200 transition">Prime Connectivity (Metro)</button>
+                    <button onclick="filterLocality('value')" class="px-4 py-2 rounded-full bg-green-100 text-green-800 text-sm hover:bg-green-200 transition">High Density / Value</button>
+                </div>
+
+                <!-- Locality Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="locality-grid">
+                    <!-- Cards injected by JS -->
+                </div>
+
+                <!-- Selected Deep Dive (Dynamic) -->
+                <div id="locality-detail" class="mt-10 card p-6 bg-amber-50 hidden border-amber-200 border">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
+                        <div>
+                            <h3 id="detail-title" class="text-2xl font-bold text-amber-900">Locality Name</h3>
+                            <p id="detail-desc" class="text-sm text-gray-600">Description text goes here.</p>
+                        </div>
+                        <span id="detail-score" class="mt-2 md:mt-0 px-3 py-1 bg-amber-200 text-amber-900 rounded-lg text-sm font-bold">Walkability Score: 9/10</span>
+                    </div>
+                    <hr class="border-amber-200 my-4">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                        <div>
+                            <span class="block text-gray-500 text-xs uppercase">Avg 3BHK Price</span>
+                            <span id="detail-price" class="font-bold text-gray-800">₹1.4 - 1.6 Cr</span>
+                        </div>
+                        <div>
+                            <span class="block text-gray-500 text-xs uppercase">Vegetable Market</span>
+                            <span id="detail-market" class="font-bold text-gray-800">0.5 km (High Density)</span>
+                        </div>
+                        <div>
+                            <span class="block text-gray-500 text-xs uppercase">Strategic Fit</span>
+                            <span id="detail-fit" class="font-bold text-gray-800">High</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: FINANCIALS -->
+        <section id="view-financials" class="hidden">
+            <div class="max-w-4xl mx-auto">
+                <div class="mb-8">
+                    <h2 class="text-3xl mb-2 text-gray-800">Financial Architecture</h2>
+                    <p class="text-gray-600">Applying the "Worst House, Best Locality" philosophy to the budget structure.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                    <!-- Budget Chart -->
+                    <div class="card p-6 flex flex-col items-center">
+                        <h3 class="font-bold text-gray-700 mb-4 w-full text-left">Budget Allocation (Total: ₹1.8 Cr)</h3>
+                        <div class="chart-container" style="height: 250px;">
+                            <canvas id="budgetChart"></canvas>
+                        </div>
+                        <p class="text-xs text-center text-gray-500 mt-4 max-w-xs">
+                            Strategy: Allocate 10-15% for renovation. Buying an older/less finished unit allows entry into a premium pin code.
+                        </p>
+                    </div>
+
+                    <!-- Philosophy Calculator -->
+                    <div class="card p-6 bg-gray-50">
+                        <h3 class="font-bold text-gray-800 mb-4 border-b pb-2">Value Investing Logic</h3>
+                        <p class="text-sm text-gray-600 mb-6">
+                            Comparing a "Premium Ready" unit vs. a "Value Fixer-Upper" in the same Zone (e.g., Nagole).
+                        </p>
+                        
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center p-3 bg-white rounded border border-gray-200">
+                                <div>
+                                    <span class="block font-bold text-gray-800">Option A: Premium Unit</span>
+                                    <span class="text-xs text-gray-500">Perfect condition, High Floor</span>
+                                </div>
+                                <span class="font-mono font-bold text-red-600">₹2.1 Cr</span>
+                            </div>
+
+                            <div class="flex justify-between items-center p-3 bg-amber-50 rounded border border-amber-200 shadow-sm">
+                                <div>
+                                    <span class="block font-bold text-amber-900">Option B: Your Strategy</span>
+                                    <span class="text-xs text-amber-700">Needs paint, Lower Floor, Same Community</span>
+                                </div>
+                                <span class="font-mono font-bold text-green-700">₹1.55 Cr</span>
+                            </div>
+
+                            <div class="flex justify-between items-center px-3 pt-2">
+                                <span class="text-sm font-bold text-gray-600">Renovation Cost (Est.)</span>
+                                <span class="font-mono text-gray-800">- ₹15 Lakhs</span>
+                            </div>
+                            
+                            <hr class="border-gray-300">
+                            
+                            <div class="flex justify-between items-center px-3">
+                                <span class="text-lg font-bold text-gray-800">Net Saving / Instant Equity</span>
+                                <span class="font-mono text-xl font-bold text-green-600">₹40 Lakhs</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: CALENDAR -->
+        <section id="view-calendar" class="hidden">
+            <div class="max-w-3xl mx-auto">
+                <div class="mb-8">
+                    <h2 class="text-3xl mb-2 text-gray-800">Execution Roadmap</h2>
+                    <p class="text-gray-600">Detailed timeline from Research (Now) to Possession (Q4 26/Q1 27).</p>
+                </div>
+
+                <div class="relative pl-4 md:pl-0">
+                    <!-- Line -->
+                    <div class="timeline-line hidden md:block"></div>
+
+                    <!-- Items Container -->
+                    <div class="space-y-8" id="timeline-container">
+                        <!-- Timeline items injected via JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-gray-400 py-8 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-sm mb-2">Generated for Strategic Review</p>
+            <p class="text-xs">Data reflects market estimates for East Hyderabad as of 2024-25 projections.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- DATA STORAGE ---
+        const localities = [
+            {
+                id: 'nagole',
+                name: 'Nagole',
+                type: 'prime',
+                priceRange: '₹6,500 - ₹8,000 /sft',
+                walkability: 9,
+                density: 'High',
+                desc: 'Premium connectivity hub (Metro). Established residential layouts. Extremely high density of vegetable markets and daily needs.',
+                strategicFit: 'Excellent - Look for older apartments near Metro.'
+            },
+            {
+                id: 'uppal',
+                name: 'Uppal (Near Stadium)',
+                type: 'prime',
+                priceRange: '₹5,800 - ₹7,200 /sft',
+                walkability: 8,
+                density: 'Very High',
+                desc: 'Commercial meets Residential. Noisier, but unbeatable utility access. Good for "Worst House" strategy due to varied inventory age.',
+                strategicFit: 'High - Focus on pockets away from main road.'
+            },
+            {
+                id: 'lbnagar',
+                name: 'LB Nagar / Kothapet',
+                type: 'prime',
+                priceRange: '₹6,000 - ₹7,500 /sft',
+                walkability: 9,
+                density: 'Very High',
+                desc: 'The heart of East Hyderabad. Fully mature. Zero vacancy risk. High appreciation due to commercial growth.',
+                strategicFit: 'High - Very competitive market.'
+            },
+            {
+                id: 'boduppal',
+                name: 'Boduppal',
+                type: 'value',
+                priceRange: '₹4,500 - ₹5,500 /sft',
+                walkability: 7,
+                density: 'Medium-High',
+                desc: 'Slightly interior. More space for budget. Rapidly densifying but amenities might be 1-1.5km away.',
+                strategicFit: 'Medium - Good if budget is tight, but less central.'
+            },
+            {
+                id: 'peerzadiguda',
+                name: 'Peerzadiguda',
+                type: 'value',
+                priceRange: '₹4,800 - ₹6,000 /sft',
+                walkability: 6,
+                density: 'Medium',
+                desc: 'Near Uppal but quieter. Developing infrastructure. Vegetable markets are clustering but not as dense as Nagole.',
+                strategicFit: 'Medium - Appreciation play.'
+            },
+            {
+                id: 'pocharam',
+                name: 'Pocharam (Infosys)',
+                type: 'value',
+                priceRange: '₹4,000 - ₹5,000 /sft',
+                walkability: 5,
+                density: 'Low-Medium',
+                desc: 'IT hub of East. Too far for "city wide" feel. Density is lower. Amenities require travel.',
+                strategicFit: 'Low - Doesn\'t match density criteria well.'
+            }
+        ];
+
+        const timelineEvents = [
+            {
+                phase: 'Phase 1: Market Recon',
+                date: 'Feb - Mar 2026',
+                title: 'Data Collection & Shortlisting',
+                desc: 'Visit Nagole, Uppal, LB Nagar. Identify 10-15 societies. Filter by "Amenities < 1km". Talk to watchmen/brokers about "distressed" or "stagnant" listings.',
+                status: 'current'
+            },
+            {
+                phase: 'Phase 2: The Hunt',
+                date: 'Apr - Jun 2026',
+                title: 'Deep Diligence & Negotiation',
+                desc: 'Narrow down to top 3 units. Focus on "ugly ducklings" - bad paint, cluttered, but good structure. Verify legal titles. Secure pre-approval for loan.',
+                status: 'future'
+            },
+            {
+                phase: 'Phase 3: Execution',
+                date: 'Jul - Sep 2026 (Q3)',
+                title: 'Purchase & Agreement',
+                desc: 'This is your target buy window. Monsoon season often sees softer negotiations. Sign Sale Agreement. Disburse loan.',
+                status: 'future'
+            },
+            {
+                phase: 'Phase 4: Value Add',
+                date: 'Oct - Nov 2026',
+                title: 'Renovation & Interiors',
+                desc: 'Execute the "Best Locality" upgrade. Paint, flooring polishing, kitchen upgrade. Transform the "Worst House".',
+                status: 'future'
+            },
+            {
+                phase: 'Phase 5: Possession',
+                date: 'Dec 2026 - Jan 2027',
+                title: 'Move In / Handover',
+                desc: 'Final checks. Housewarming. Buffer built in for Dec 2026 possession deadline.',
+                status: 'future'
+            }
+        ];
+
+        // --- CORE FUNCTIONS ---
+
+        function switchTab(tabId) {
+            // Hide all sections
+            ['dashboard', 'macro', 'micro', 'financials', 'calendar'].forEach(id => {
+                document.getElementById(`view-${id}`).classList.add('hidden');
+                document.getElementById(`btn-${id}`).classList.remove('tab-active');
+                document.getElementById(`btn-${id}`).classList.add('tab-inactive');
+            });
+
+            // Show selected
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+            document.getElementById(`btn-${tabId}`).classList.remove('tab-inactive');
+            document.getElementById(`btn-${tabId}`).classList.add('tab-active');
+
+            // Trigger chart resize if needed
+            if (tabId === 'macro' && window.macroChartInstance) window.macroChartInstance.resize();
+            if (tabId === 'financials' && window.budgetChartInstance) window.budgetChartInstance.resize();
+        }
+
+        function renderLocalityGrid(filterType) {
+            const grid = document.getElementById('locality-grid');
+            grid.innerHTML = '';
+
+            const filtered = filterType === 'all' ? localities : localities.filter(l => l.type === filterType);
+
+            filtered.forEach(loc => {
+                const div = document.createElement('div');
+                div.className = 'card p-5 cursor-pointer border hover:border-amber-400';
+                div.onclick = () => showLocalityDetail(loc.id);
+                div.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-bold text-lg text-gray-800">${loc.name}</h3>
+                        <span class="text-xs font-bold px-2 py-1 rounded ${loc.type === 'prime' ? 'bg-amber-100 text-amber-800' : 'bg-green-100 text-green-800'} uppercase">${loc.type}</span>
+                    </div>
+                    <p class="text-gray-500 text-sm mb-3">${loc.priceRange}</p>
+                    <div class="flex items-center space-x-4 text-xs text-gray-400">
+                        <div class="flex items-center">
+                            <span class="mr-1">🚶</span> Score: ${loc.walkability}/10
+                        </div>
+                        <div class="flex items-center">
+                            <span class="mr-1">🏠</span> Density: ${loc.density}
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(div);
+            });
+        }
+
+        function filterLocality(type) {
+            renderLocalityGrid(type);
+            document.getElementById('locality-detail').classList.add('hidden');
+        }
+
+        function showLocalityDetail(id) {
+            const loc = localities.find(l => l.id === id);
+            if (!loc) return;
+
+            document.getElementById('detail-title').innerText = loc.name;
+            document.getElementById('detail-desc').innerText = loc.desc;
+            document.getElementById('detail-score').innerText = `Walkability Score: ${loc.walkability}/10`;
+            document.getElementById('detail-price').innerText = loc.priceRange;
+            document.getElementById('detail-fit').innerText = loc.strategicFit;
+            
+            // Logic for density text based on data
+            document.getElementById('detail-market').innerText = loc.walkability >= 8 ? '< 0.5 km (High Density)' : '1 - 2 km (Medium Density)';
+
+            const detailPanel = document.getElementById('locality-detail');
+            detailPanel.classList.remove('hidden');
+            detailPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function renderTimeline() {
+            const container = document.getElementById('timeline-container');
+            container.innerHTML = '';
+
+            timelineEvents.forEach((event, index) => {
+                const isLeft = index % 2 === 0;
+                
+                const item = document.createElement('div');
+                item.className = `relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group`;
+                
+                // Content for desktop alignment logic
+                const contentHTML = `
+                    <div class="order-1 w-full md:w-5/12"></div>
+                    <div class="z-20 flex items-center order-1 bg-amber-600 shadow-xl w-8 h-8 rounded-full md:mx-auto">
+                        <h1 class="mx-auto font-semibold text-lg text-white">${index + 1}</h1>
+                    </div>
+                    <div class="order-1 bg-white rounded-lg shadow-md w-full md:w-5/12 px-6 py-4 border-l-4 ${event.status === 'current' ? 'border-amber-500 ring-2 ring-amber-100' : 'border-gray-200'}">
+                        <span class="mb-1 text-xs font-bold text-amber-600 uppercase tracking-wider">${event.phase}</span>
+                        <h3 class="mb-1 font-bold text-gray-800 text-lg">${event.title}</h3>
+                        <p class="mb-2 text-sm font-semibold text-gray-500">${event.date}</p>
+                        <p class="text-sm leading-snug tracking-wide text-gray-600 text-opacity-100">${event.desc}</p>
+                    </div>
+                `;
+                
+                // Simplified mobile layout
+                const mobileHTML = `
+                     <div class="flex gap-4">
+                        <div class="flex flex-col items-center">
+                            <div class="w-8 h-8 bg-amber-600 rounded-full flex items-center justify-center text-white font-bold shrink-0 z-10">${index + 1}</div>
+                            <div class="w-0.5 h-full bg-gray-200 -mt-2"></div>
+                        </div>
+                        <div class="pb-8">
+                             <span class="text-xs font-bold text-amber-600 uppercase tracking-wider">${event.phase}</span>
+                             <h3 class="font-bold text-gray-800 text-lg">${event.title}</h3>
+                             <p class="text-sm font-semibold text-gray-500 mb-2">${event.date}</p>
+                             <p class="text-sm text-gray-600">${event.desc}</p>
+                        </div>
+                     </div>
+                `;
+
+                // Quick hack for responsive HTML structure difference
+                if(window.innerWidth < 768) {
+                    item.innerHTML = mobileHTML;
+                    item.className = "";
+                } else {
+                    item.innerHTML = contentHTML;
+                }
+                
+                container.appendChild(item);
+            });
+        }
+
+        // --- CHARTS ---
+
+        function initCharts() {
+            // Macro Chart: East vs West Appreciation
+            const ctxMacro = document.getElementById('macroChart').getContext('2d');
+            window.macroChartInstance = new Chart(ctxMacro, {
+                type: 'bar',
+                data: {
+                    labels: ['Current Price Base', 'Infra Impact', 'Saturation Risk (Inverse)', 'Proj. 5Y Appreciation'],
+                    datasets: [
+                        {
+                            label: 'East Hyderabad (Target)',
+                            data: [65, 80, 90, 85], // Abstract scores
+                            backgroundColor: 'rgba(180, 83, 9, 0.8)',
+                            borderColor: 'rgba(180, 83, 9, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'West Hyderabad',
+                            data: [95, 60, 40, 65], // High base, lower growth %
+                            backgroundColor: 'rgba(107, 114, 128, 0.5)',
+                            borderColor: 'rgba(107, 114, 128, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.raw + '/100 Index Score';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 100, title: { display: true, text: 'Strategic Index Score' } }
+                    }
+                }
+            });
+
+            // Budget Chart
+            const ctxBudget = document.getElementById('budgetChart').getContext('2d');
+            window.budgetChartInstance = new Chart(ctxBudget, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Base Cost (Property)', 'Registration & Duties (7.5% approx)', 'Renovation (Strategy)', 'Buffer/Misc'],
+                    datasets: [{
+                        data: [145, 12, 18, 5], // Total 1.8Cr approx logic
+                        backgroundColor: [
+                            'rgba(180, 83, 9, 0.8)', // Main
+                            'rgba(251, 191, 36, 0.8)', // Reg
+                            'rgba(16, 185, 129, 0.8)', // Reno (Green for value add)
+                            'rgba(156, 163, 175, 0.5)' // Buffer
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right' }
+                    }
+                }
+            });
+        }
+
+        // --- INITIALIZATION ---
+        window.addEventListener('load', () => {
+            renderLocalityGrid('all');
+            renderTimeline();
+            initCharts();
+            
+            // Handle window resize for timeline re-render
+            window.addEventListener('resize', () => {
+                renderTimeline();
+            });
+        });
+
+    </script>
+</body>
+</html>

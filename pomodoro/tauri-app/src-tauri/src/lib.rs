@@ -289,7 +289,7 @@ pub fn run() {
                             "reset" => state.reset(),
                             
                             // Links
-                            "help" => {
+                            "about" => {
                                 let _ = open::that("https://vrushank.in/pomodoro#how-to-use");
                             },
                             "quit" => {

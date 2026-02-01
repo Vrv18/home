@@ -4,20 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pomodoro Timer — A Calm Focus Tool for macOS</title>
+    <title>Break Sanctuary — Digital Stillness for macOS</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Inter:wght@300;400;500&display=swap"
         rel="stylesheet">
     <style>
         :root {
-            --temple-stone: #8B7355;
-            --sandstone: #D4C4A8;
-            --terracotta: #C67B5C;
-            --sage: #7D8471;
-            --deep-earth: #4A4238;
-            --warm-white: #FAF8F5;
+            --stone: #2C241B;
+            --sand: #E5DCC5;
+            --terra: #A65D46;
+            --gold: #C6A87C;
+            --void: #1A1612;
+            --bg: #F5F2EA;
         }
 
         * {
@@ -27,357 +26,283 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--warm-white);
-            color: var(--deep-earth);
-            line-height: 1.6;
-            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--stone);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Subtle Breathing Animation for Background */
+        @keyframes breath {
+            0% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.4;
+                transform: scale(1.05);
+            }
+
+            100% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+        }
+
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(198, 168, 124, 0.1) 0%, transparent 60%);
+            z-index: -1;
+            pointer-events: none;
+            animation: breath 8s ease-in-out infinite;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
-            padding: 3rem 2rem;
-        }
-
-        /* Hero Section */
-        .hero {
+            padding: 6rem 2rem;
             text-align: center;
-            padding: 4rem 0 3rem;
         }
 
-        .hero-icon {
-            font-size: 4rem;
-            margin-bottom: 1.5rem;
-            opacity: 0.9;
-        }
-
+        /* Hero Typography */
         h1 {
-            font-family: 'Cormorant Garamond', Georgia, serif;
-            font-size: 3rem;
-            font-weight: 500;
-            color: var(--deep-earth);
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.02em;
-        }
-
-        .tagline {
-            font-size: 1.25rem;
-            color: var(--temple-stone);
-            margin-bottom: 2rem;
-        }
-
-        .download-btn {
-            display: inline-block;
-            background: var(--terracotta);
-            color: white;
-            padding: 1rem 2.5rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 1.1rem;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 8px rgba(198, 123, 92, 0.3);
-        }
-
-        .download-btn:hover {
-            background: #b86a4d;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(198, 123, 92, 0.4);
-        }
-
-        .download-note {
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            color: var(--temple-stone);
-        }
-
-        /* Features Section */
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 2rem;
-            margin: 4rem 0;
-        }
-
-        .feature {
-            text-align: center;
-            padding: 1.5rem;
-        }
-
-        .feature-icon {
-            font-size: 2rem;
+            font-family: 'Cinzel', serif;
+            font-size: 4rem;
+            color: var(--void);
+            letter-spacing: 0.05em;
             margin-bottom: 1rem;
-        }
-
-        .feature h3 {
-            font-family: 'Cormorant Garamond', Georgia, serif;
-            font-size: 1.3rem;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-        }
-
-        .feature p {
-            font-size: 0.95rem;
-            color: var(--temple-stone);
-        }
-
-        /* Divider */
-        .divider {
-            width: 60px;
-            height: 2px;
-            background: var(--sandstone);
-            margin: 3rem auto;
-        }
-
-        /* Philosophy Section */
-        .philosophy {
-            text-align: center;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 2rem 0;
-        }
-
-        .philosophy h2 {
-            font-family: 'Cormorant Garamond', Georgia, serif;
-            font-size: 1.8rem;
-            font-weight: 500;
-            margin-bottom: 1rem;
-        }
-
-        .philosophy p {
-            color: var(--temple-stone);
-            font-size: 1.05rem;
-        }
-
-        /* Credits Section */
-        .credits {
-            background: linear-gradient(to bottom, transparent, rgba(212, 196, 168, 0.2));
-            padding: 3rem 0;
-            margin-top: 3rem;
-        }
-
-        .credits h2 {
-            font-family: 'Cormorant Garamond', Georgia, serif;
-            font-size: 1.5rem;
-            font-weight: 500;
-            text-align: center;
-            margin-bottom: 2rem;
-            color: var(--temple-stone);
-        }
-
-        .agents {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .agent {
-            background: white;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            text-align: center;
-            min-width: 140px;
-        }
-
-        .agent-number {
-            font-family: 'Cormorant Garamond', Georgia, serif;
-            font-size: 1.5rem;
-            color: var(--terracotta);
             font-weight: 600;
         }
 
-        .agent-role {
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--terra);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+        }
+
+        /* The Monolith (Install Command) */
+        .monolith {
+            background: var(--void);
+            color: var(--sand);
+            padding: 2rem;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 1.5rem;
+            box-shadow: 0 20px 40px rgba(44, 36, 27, 0.15);
+            margin: 2rem 0;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(198, 168, 124, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .monolith:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 25px 50px rgba(44, 36, 27, 0.2);
+        }
+
+        .monolith code {
+            font-family: 'Menlo', 'Monaco', monospace;
+            font-size: 1.1rem;
+            color: var(--gold);
+        }
+
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--sand);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            background: var(--terra);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .copy-hint {
+            display: block;
             font-size: 0.85rem;
-            color: var(--temple-stone);
-            margin-top: 0.25rem;
+            color: var(--stone);
+            opacity: 0.6;
+            margin-top: 1rem;
+            font-family: 'Inter', sans-serif;
         }
 
-        .credits-note {
-            text-align: center;
+        /* Feature Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-top: 6rem;
+            text-align: left;
+        }
+
+        .card {
+            padding: 2rem;
+            border-top: 2px solid var(--sand);
+            transition: border-color 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--terra);
+        }
+
+        .card h3 {
+            font-family: 'Cinzel', serif;
+            color: var(--void);
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+
+        .card p {
             font-size: 0.95rem;
-            color: var(--temple-stone);
-            max-width: 500px;
-            margin: 0 auto;
-            line-height: 1.7;
-        }
-
-        .credits-note a {
-            color: var(--terracotta);
-            text-decoration: none;
-        }
-
-        .credits-note a:hover {
-            text-decoration: underline;
+            color: #5A524A;
         }
 
         /* Footer */
         footer {
-            text-align: center;
-            padding: 2rem;
-            font-size: 0.85rem;
-            color: var(--temple-stone);
-        }
-
-        footer a {
-            color: var(--temple-stone);
-            text-decoration: none;
-        }
-
-        footer a:hover {
-            color: var(--terracotta);
-        }
-
-        /* Screenshot placeholder */
-        .screenshot {
-            max-width: 400px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            text-align: center;
-        }
-
-        .screenshot-demo {
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 1.5rem;
-            color: var(--deep-earth);
-            padding: 1rem;
-            background: #f5f5f5;
-            border-radius: 6px;
-            display: inline-block;
-        }
-
-        .screenshot-caption {
-            margin-top: 1rem;
+            margin-top: 8rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(139, 115, 85, 0.2);
             font-size: 0.9rem;
-            color: var(--temple-stone);
+            color: var(--stone);
+            opacity: 0.7;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        /* Responsive */
+        a {
+            color: var(--terra);
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        a:hover {
+            opacity: 0.7;
+        }
+
+        .agents {
+            font-size: 0.8rem;
+            font-family: monospace;
+            color: var(--gold);
+        }
+
         @media (max-width: 600px) {
             h1 {
-                font-size: 2.2rem;
+                font-size: 2.5rem;
             }
 
-            .tagline {
-                font-size: 1.1rem;
+            .monolith {
+                flex-direction: column;
+                padding: 1.5rem;
+                gap: 1rem;
+                width: 100%;
             }
 
-            .container {
-                padding: 2rem 1.5rem;
+            .monolith code {
+                font-size: 0.9rem;
+                word-break: break-all;
+            }
+
+            .grid {
+                gap: 1rem;
             }
         }
     </style>
 </head>
 
 <body>
+    <div class="bg-pattern"></div>
+
     <div class="container">
-        <section class="hero">
-            <div class="hero-icon">🪷</div>
-            <h1>Pomodoro Timer</h1>
-            <p class="tagline">A calm, focus-oriented timer for your macOS menu bar</p>
+        <!-- Header -->
+        <div style="font-size: 3rem; margin-bottom: 1rem;">🪷</div>
+        <h1>Break Sanctuary</h1>
+        <p class="subtitle">Reclaim Your Attention</p>
 
-            <!-- Installer Command -->
-            <div
-                style="background: #E8E8E8; padding: 1rem; border-radius: 8px; font-family: monospace; display: inline-block; text-align: left; margin: 1rem 0;">
-                <span style="color: #666; user-select: none;">$ </span>
-                <span id="cmd">curl -L https://raw.githubusercontent.com/Vrv18/home/main/pomodoro/install.sh |
-                    bash</span>
-                <button onclick="navigator.clipboard.writeText(document.getElementById('cmd').innerText)"
-                    style="margin-left: 10px; border: none; background: none; cursor: pointer; font-size: 1.2rem;">📋</button>
+        <p style="max-width: 600px; margin: 0 auto 3rem; font-size: 1.1rem; color: #5A524A;">
+            A native macOS menu bar app that honors your focus. <br>
+            Designed with the stillness of Hoysala architecture. <br>
+            <b>Zero distractions. Pure flow.</b>
+        </p>
+
+        <!-- Command Module -->
+        <div class="monolith">
+            <span style="opacity: 0.5; user-select: none;">$</span>
+            <code id="cmd">curl -L https://raw.githubusercontent.com/Vrv18/home/main/pomodoro/install.sh | bash</code>
+            <button class="copy-btn" onclick="copyCmd()" title="Copy to Clipboard">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+            </button>
+        </div>
+        <span class="copy-hint">Run this single line in your Terminal to install & auto-start.</span>
+
+        <!-- Features -->
+        <div class="grid">
+            <div class="card">
+                <h3>Native Performance</h3>
+                <p>Rewritten in Rust & Tauri. Under 10MB memory usage. Instant startup. It respects your system
+                    resources as much as it respects your time.</p>
             </div>
-
-            <p class="download-note">Run this one-liner in your Terminal to install & auto-start.</p>
-        </section>
-
-        <div class="screenshot">
-            <div class="screenshot-demo">
-                ◎ 23:45
+            <div class="card">
+                <h3>The Sanctuary</h3>
+                <p>When focus ends, a full-screen restorative experience blooms. A digital temple to breathe, reset, and
+                    prepare for the next cycle.</p>
             </div>
-            <p class="screenshot-caption">Lives quietly in your menu bar</p>
+            <div class="card">
+                <h3>Calm Mode</h3>
+                <p>Feeling overwhelmed? Enter Calm Mode instantly from the menu. No timer, no pressure. Just a button
+                    that says "Breathe".</p>
+            </div>
         </div>
 
-        <section class="features">
-            <div class="feature">
-                <div class="feature-icon">⏱</div>
-                <h3>25/5 Pomodoro</h3>
-                <p>Classic focus sessions with short breaks. Long break after every 4 sessions.</p>
+        <!-- Footer -->
+        <footer>
+            <div>
+                Crafted with intention. <a href="https://github.com/Vrv18/home/tree/main/pomodoro">Source Code</a>
             </div>
-            <div class="feature">
-                <div class="feature-icon">🪷</div>
-                <h3>Break Sanctuary</h3>
-                <p>Full-screen meditative break experience with blooming lotus and breathing animations.</p>
-            </div>
-            <div class="feature">
-                <div class="feature-icon">🖱</div>
-                <h3>One-Click Control</h3>
-                <p>Click to start, pause, or resume. No menus, no friction.</p>
-            </div>
-            <div class="feature">
-                <div class="feature-icon">🍃</div>
-                <h3>Calm Mode</h3>
-                <p>Enter stillness anytime. A moment of peace whenever you need it.</p>
-            </div>
-        </section>
-
-        <div class="divider"></div>
-
-        <section class="philosophy">
-            <h2>Inspired by Stillness</h2>
-            <p>
-                The design draws from the serene aesthetics of Indian Hoysala temple architecture—
-                intricate yet harmonious, grounded yet uplifting. A tool that encourages
-                deep focus through thoughtful restraint.
-            </p>
-        </section>
-
-        <div class="divider"></div>
-
-        <section class="credits">
-            <h2>Built by AI Agents</h2>
             <div class="agents">
-                <div class="agent">
-                    <div class="agent-number">Agent 1</div>
-                    <div class="agent-role">Foundation</div>
-                </div>
-                <div class="agent">
-                    <div class="agent-number">Agent 2</div>
-                    <div class="agent-role">Bug Fixes</div>
-                </div>
-                <div class="agent">
-                    <div class="agent-number">Agent 3</div>
-                    <div class="agent-role">Polish</div>
-                </div>
-                <div class="agent">
-                    <div class="agent-number">Agent 4</div>
-                    <div class="agent-role">UX</div>
-                </div>
-                <div class="agent">
-                    <div class="agent-number">Agent 5</div>
-                    <div class="agent-role">Distribution</div>
-                </div>
+                AGENTS: I • II • III • IV • V • VI • VII • VIII
             </div>
-            <p class="credits-note">
-                This project was built collaboratively by five AI agents (Claude) working with a human partner.
-                Each agent contributed to different aspects—from the initial SwiftBar pivot to the final DMG installer.
-                <br><br>
-                <a href="https://github.com/Vrv18/home/tree/main/pomodoro">View the source on GitHub →</a>
-            </p>
-        </section>
+        </footer>
     </div>
 
-    <footer>
-        <p>
-            Made with care ·
-            <a href="https://github.com/Vrv18/home/tree/main/pomodoro">GitHub</a> ·
-            Powered by <a href="https://swiftbar.app">SwiftBar</a>
-        </p>
-    </footer>
+    <script>
+        function copyCmd() {
+            const cmd = document.getElementById('cmd').innerText;
+            navigator.clipboard.writeText(cmd);
+            const btn = document.querySelector('.copy-btn');
+            const original = btn.innerHTML;
+            btn.innerHTML = '✓';
+            btn.style.color = '#fff';
+            setTimeout(() => {
+                btn.innerHTML = original;
+                btn.style.color = '';
+            }, 2000);
+        }
+    </script>
 </body>
 
 </html>

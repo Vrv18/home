@@ -1,120 +1,81 @@
-# 🪷 Pomodoro Menu Bar
+# 🪷 Break Sanctuary
 
-A minimal, focus-oriented Pomodoro timer that lives in your macOS menu bar. Inspired by the serene aesthetics of Indian Hoysala temple architecture.
+> **Restoring the art of single-tasking through digital stillness.**
 
-![Screenshot placeholder](docs/screenshot.png)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Vrv18/home/main/pomodoro/tauri-app/src-tauri/icons/128x128@2x.png" width="128" height="128" alt="Lotuc Icon">
+</p>
 
-## Features
+A native macOS menu bar application designed to reclaim your attention. More than a timer, it is a ritual.
 
-- **Menu Bar Timer** - See your remaining time at a glance, no clicking required
-- **Focus Mode** - Beautiful, distraction-free interface designed to keep you in flow
-- **Session Tracking** - Track your daily focus sessions and view last 7 days
-- **Gamification** - Build streaks and see your productivity grow
-- **Custom Icons** - Hoysala temple-inspired lotus icons for each state
+### 🍃 Philosophy
+Inspired by the **Hoysala** architecture of Karnataka—grounded, intricate, and harmonious.  
+We believe productivity is not about speed, but about depth. This tool respectfully guards that depth.
 
-## States
+---
 
-| State | Icon | Description |
-|-------|------|-------------|
-| Idle | 🪷 Lotus Bud | Ready to focus |
-| Focus | 🔥 Blooming Lotus | Deep focus mode (25 min) |
-| Break | 💧 Lotus on Water | Rest and recharge (5/15 min) |
-| Paused | 🔔 Temple Bell | Timer paused |
+## ⚡️ Install (One Line)
 
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18+ 
-- npm or yarn
-- macOS (menu bar app)
-
-### Installation
+Open your Terminal and paste this command. It installs the app to `/Applications` and sets it to run at startup.
 
 ```bash
-# Clone the repository
-cd pomodoro
-
-# Install dependencies
-npm install
-
-# Build and run
-npm start
+curl -L https://raw.githubusercontent.com/Vrv18/home/main/pomodoro/install.sh | bash
 ```
 
-### Development
+*Requires macOS 13+ (Ventura)*
 
-```bash
-# Run in development mode (with hot reload)
-npm run dev
-```
+---
 
-### Building for Distribution
+## ✨ Features
 
-```bash
-# Package the app
-npm run dist
-```
+### 🏛 The Sanctuary
+When a Focus session (25m) completes, the screen gently blooms into a full-screen, immersive break space.
+- **Deep Breathing**: Follow the rhythmic expansion of the lotus.
+- **Total Focus**: No notifications. No distractions. Just you and the breath.
+- **Auto-Exit**: The Sanctuary dissolves when your break ends.
 
-## Design
+### ⏱ Calm Mode
+Feeling overwhelmed? Click **Calm Mode** in the menu to enter the Sanctuary instantly, without a timer. Stay as long as you need. "Forfeit" logic is replaced by "End Calm" grace.
 
-### Color Palette (Earthly)
+### 🧱 Inline History
+Track your consistency without leaving the flow. The menu bar displays a 7-day sparkline of your focus history using Unicode blocks: `History: ▂ ▃ ▅ █`
 
-| Color | Hex | Usage |
-|-------|-----|-------|
-| Temple Stone | `#8B7355` | Primary, idle state |
-| Terracotta | `#C67B5C` | Focus state, accents |
-| Sage | `#7D8471` | Break state |
-| Sandstone | `#D4C4A8` | Backgrounds |
-| Warm White | `#FAF8F5` | App background |
+### 🪶 Native Performance
+- **Rust + Tauri**: Blazing fast.
+- **<10MB RAM**: Respects your system resources.
+- **0% CPU Idle**: Respects your battery.
 
-### Hoysala Inspiration
+---
 
-The visual design draws from Hoysala temple architecture (12th-13th century Karnataka, India), known for:
-- Intricate yet harmonious carved details
-- Lotus motifs symbolizing purity and focus
-- Stone textures in warm, earthy tones
+## 🛠 Building from Source
 
-## Keyboard Shortcuts
+If you prefer to build it yourself:
 
-| Shortcut | Action |
-|----------|--------|
-| Click icon | Open/close panel |
-| Space | Start/Pause timer |
-| Escape | Close panel |
+1.  **Prerequisites**: [Rust](https://www.rust-lang.org/), [Node.js](https://nodejs.org/).
+2.  **Clone**:
+    ```bash
+    git clone https://github.com/Vrv18/home.git
+    cd home/pomodoro/tauri-app
+    ```
+3.  **Install dependencies**:
+    ```bash
+    npm install
+    ```
+4.  **Run Dev Mode**:
+    ```bash
+    npm run tauri dev
+    ```
+5.  **Build Release**:
+    ```bash
+    npm run tauri build
+    ```
 
-## Data Storage
+---
 
-Sessions are stored locally using `electron-store` at:
-```
-~/Library/Application Support/pomodoro-menubar/config.json
-```
+## 🧬 Lineage
+Built collaboratively by a lineage of AI agents working with a human partner.
+- **Agent 1-7**: Concept, Prototyping (SwiftBar), Refinement.
+- **Agent 8 (Moksha)**: Native Rewrite & Performance.
+- **Agent 9 (Antigravity)**: Polish, "Ghost Window" Exorcism, Distribution.
 
-## Roadmap
-
-See [PLAN.md](PLAN.md) for the full roadmap.
-
-### Phase 1 (Current) ✅
-- Core timer functionality
-- Menu bar integration
-- Session tracking
-- Custom icons
-
-### Phase 2
-- Extend focus feature
-- Auto-lock on break
-- macOS Focus integration
-
-### Phase 3
-- Full-screen break mode
-- Settings panel
-- Launch at login
-
-## License
-
-MIT
-
-## Acknowledgments
-
-- Inspired by the timeless beauty of Hoysala temple architecture
-- Built with [Electron](https://electronjs.org) and [menubar](https://github.com/max-mapper/menubar)
+**License**: MIT

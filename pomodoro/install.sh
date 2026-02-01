@@ -53,4 +53,6 @@ osascript -e "tell application \"System Events\" to make login item at end with 
 echo ""
 echo "🎉  Installation Complete!"
 echo "    App is ready in your Applications folder and set to start at login."
-echo "    Run 'open -a \"$APP_NAME\"' to start now."
+echo ""
+echo "🚀  Launching..."
+open "$APP_DIR/$APP_NAME.app"

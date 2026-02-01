@@ -5,8 +5,9 @@ use std::sync::{Arc, Mutex};
 use tauri::{
     menu::{Menu, MenuBuilder, MenuItem, SubmenuBuilder},
     tray::{TrayIconBuilder, TrayIconEvent, MouseButton, MouseButtonState},
-    Manager, AppHandle, Emitter,
+    Manager, AppHandle, Emitter, Runtime, LogicalSize, Size, WebviewWindow
 };
+use tauri_plugin_opener::OpenerExt;
 use timer::{TimerState, Status, TimerType};
 use persistence::History;
 use chrono::Local;

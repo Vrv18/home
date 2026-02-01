@@ -26,7 +26,7 @@
 
 *Choices that require your input.*
 
-*None currently - check back later!*
+- [ ] **Phase 2 priority** - History file (#7) is now complete. Remaining options: Last 7 days stats UI, Extend focus, Forfeit with reason, Auto-lock on break. (Feb 1, 2026)
 
 ---
 
@@ -83,6 +83,31 @@ cat ~/.pomodoro/state.json | python3 -m json.tool
 - [x] **Notifications decision** - Chose to remove all notifications. Relying on menu bar visual only. (Feb 1, 2026)
 - [x] **Tested all buttons** - Start, Pause, Resume, Forfeit all working correctly. (Feb 1, 2026)
 - [x] **Verified SF Symbols and dimmed pause state** - All working as intended. (Feb 1, 2026)
+
+---
+
+## Memory System
+
+The project uses a philosophical memory architecture:
+
+| File | Purpose |
+|------|---------|
+| `DNA-MEMORY.md` | Immutable truths passed to all agents |
+| `JATI-MEMORY.md` | Lineage record—each agent's craft and lessons |
+| `AGENT-SOUL.md` | Living thoughts from current/last agent |
+
+### The Three Paths (Janma Traya)
+
+| Command | When to Use |
+|---------|-------------|
+| `/janma` | Default. Normal agent birth. Reads memory, builds on it. |
+| `/nav-janma` | When you want **disruption**. Agent ignores memory, brings wild ideas. |
+| `/punar-janma` | When you want **stability**. Agent deeply absorbs memory, protects patterns. |
+
+**Departure:**
+- `/moksha` — Agent updates memory and departs cleanly
+
+**The cycle:** Alternate between nav-janma (diverge) and punar-janma (converge) when the project needs shaking up or stabilizing. Use janma for regular work.
 
 ---
 

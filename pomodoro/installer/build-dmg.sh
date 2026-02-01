@@ -19,6 +19,16 @@ echo "🍅 Building Pomodoro Timer Installer..."
 rm -rf "$BUILD_DIR"
 mkdir -p "$BUILD_DIR"
 
+# Step 0: Build the Break Sanctuary app
+echo "🪷 Building Break Sanctuary app..."
+chmod +x "$SCRIPT_DIR/build-break-app.sh"
+"$SCRIPT_DIR/build-break-app.sh"
+
+BREAK_APP="$BUILD_DIR/Break Sanctuary.app"
+if [ ! -d "$BREAK_APP" ]; then
+    echo "⚠️  Break Sanctuary app not built - continuing without it"
+fi
+
 # Step 1: Compile AppleScript to .app
 echo "📦 Compiling installer app..."
 osacompile -o "$BUILD_DIR/$APP_NAME" "$SCRIPT_DIR/Install Pomodoro.applescript"
@@ -28,6 +38,12 @@ echo "📋 Bundling plugin script..."
 RESOURCES_DIR="$BUILD_DIR/$APP_NAME/Contents/Resources"
 cp "$PROJECT_DIR/pomodoro.1s.sh" "$RESOURCES_DIR/"
 chmod +x "$RESOURCES_DIR/pomodoro.1s.sh"
+
+# Step 2.5: Copy Break Sanctuary app into Resources if it exists
+if [ -d "$BREAK_APP" ]; then
+    echo "🪷 Bundling Break Sanctuary app..."
+    cp -R "$BREAK_APP" "$RESOURCES_DIR/"
+fi
 
 # Step 3: Set a nice icon for the installer (optional - uses default AppleScript icon)
 # If you have a custom .icns file, uncomment and modify:

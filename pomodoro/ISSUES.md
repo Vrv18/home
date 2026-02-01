@@ -49,7 +49,11 @@
 - [x] **#3 - Chunky action buttons**: Pause and Forfeit should feel more prominent, not like standard dropdown menu items.
   - *Fixed*: Replaced Unicode emojis with SF Symbols (play.fill, pause.fill, xmark.circle), added system colors (green for Start/Resume, blue for Pause, red for Forfeit), increased font size to 15.
 
-- [ ] **#7 - History file not implemented**: `HISTORY_FILE` is defined in the script but never written to. Needed for Phase 2 "Last 7 days stats" feature.
+- [x] **#7 - History file not implemented**: `HISTORY_FILE` is defined in the script but never written to. Needed for Phase 2 "Last 7 days stats" feature.
+  - *Fixed*: Added `update_history` function that writes to `~/.pomodoro/history.json`. Tracks completed sessions, forfeited sessions, and total focus minutes per day. Keeps last 30 days of data.
+
+- [ ] **#14 - Info button in dropdown**: Add an "Info" button at the bottom of the dropdown menu. Clicking it should open a simple dialog box explaining how to use the timer (click to start/pause, dropdown for more options, etc.).
+  - *Status*: Not currently being worked on.
 
 - [x] **#8 - Dead code cleanup**: The `tick` command case (lines 149-157) is never called. The default `*` case handles all timer updates. Should remove for clarity.
   - *Fixed*: Removed dead `tick` case. Timer now uses start_time-based calculation, no tick needed.
@@ -66,4 +70,4 @@
 
 ---
 
-*Last updated: February 1, 2026*
+*Last updated: February 1, 2026 (Agent 7 moksha)*

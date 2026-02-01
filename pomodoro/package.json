@@ -9,7 +9,9 @@
     "start": "npm run build && electron .",
     "dev": "concurrently \"npm run watch\" \"electron .\"",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "break": "electron src/break-screen/main.js",
+    "break:test": "electron src/break-screen/main.js --test"
   },
   "author": "",
   "license": "MIT",
@@ -18,6 +20,7 @@
     "concurrently": "^8.2.2",
     "electron": "^28.1.0",
     "electron-builder": "^24.9.1",
+    "electron-packager": "^17.1.2",
     "typescript": "^5.3.3"
   },
   "dependencies": {

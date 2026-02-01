@@ -96,6 +96,18 @@ Click Install to continue." buttons {"Cancel", "Install"} default button "Instal
 		-- Create the pomodoro state directory
 		do shell script "mkdir -p ~/.pomodoro"
 		
+		-- Install Break Sanctuary app if bundled
+		set breakAppSource to resourcesPath & "Break Sanctuary.app"
+		set breakAppDest to pluginFolder & "/Break Sanctuary.app"
+		if fileExists(breakAppSource) then
+			showProgress("Installing Break Sanctuary...")
+			-- Remove old version if exists
+			try
+				do shell script "rm -rf " & quoted form of breakAppDest
+			end try
+			do shell script "cp -R " & quoted form of breakAppSource & " " & quoted form of breakAppDest
+		end if
+		
 		-- Launch SwiftBar
 		showProgress("Launching Pomodoro Timer...")
 		delay 0.5

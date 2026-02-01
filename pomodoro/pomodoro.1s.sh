@@ -14,11 +14,104 @@ STATE_DIR="$HOME/.pomodoro"
 STATE_FILE="$STATE_DIR/state.json"
 HISTORY_FILE="$STATE_DIR/history.json"
 
+# Break Sanctuary app
+# The app is installed alongside the plugin in ~/Documents/SwiftBar/
+SWIFTBAR_DIR="$HOME/Documents/SwiftBar"
+BREAK_SANCTUARY_APP="$SWIFTBAR_DIR/Break Sanctuary.app"
+# Fallback to dev mode (npm run break) if app not found
+POMODORO_PROJECT="$HOME/Documents/GitHub/home-repo/pomodoro"
+BREAK_SCREEN_ENABLED=true
+
 # Ensure state directory exists
 mkdir -p "$STATE_DIR"
 
 # Script path (properly quoted for paths with spaces)
 SCRIPT_PATH="$0"
+
+# Launch the break sanctuary screen
+launch_break_screen() {
+    if [ "$BREAK_SCREEN_ENABLED" != true ]; then
+        return
+    fi
+    
+    # Try standalone app first (installed version)
+    if [ -d "$BREAK_SANCTUARY_APP" ]; then
+        open "$BREAK_SANCTUARY_APP" &
+        return
+    fi
+    
+    # Fallback to dev mode (npm run break)
+    if [ -d "$POMODORO_PROJECT" ] && [ -f "$POMODORO_PROJECT/src/break-screen/main.js" ]; then
+        cd "$POMODORO_PROJECT" && npm run break >/dev/null 2>&1 &
+    fi
+}
+
+# Update history file with session data
+# Usage: update_history <type> [minutes]
+#   type: "completed" or "forfeited"
+#   minutes: focus minutes completed (only for "completed" type)
+update_history() {
+    local TYPE="$1"
+    local MINUTES="${2:-0}"
+    local TODAY=$(date +%Y-%m-%d)
+    
+    # Initialize history file if it doesn't exist
+    if [ ! -f "$HISTORY_FILE" ]; then
+        echo '{"sessions":[]}' > "$HISTORY_FILE"
+    fi
+    
+    # Read and update history using Python for reliable JSON handling
+    /usr/bin/python3 << PYTHON_EOF
+import json
+import os
+
+history_file = "$HISTORY_FILE"
+today = "$TODAY"
+update_type = "$TYPE"
+minutes = int("$MINUTES") if "$MINUTES" else 0
+
+# Read current history
+try:
+    with open(history_file, 'r') as f:
+        history = json.load(f)
+except (json.JSONDecodeError, FileNotFoundError):
+    history = {"sessions": []}
+
+# Ensure sessions list exists
+if "sessions" not in history:
+    history["sessions"] = []
+
+# Find today's entry or create it
+today_entry = None
+for session in history["sessions"]:
+    if session.get("date") == today:
+        today_entry = session
+        break
+
+if today_entry is None:
+    today_entry = {
+        "date": today,
+        "completed": 0,
+        "forfeited": 0,
+        "total_focus_minutes": 0
+    }
+    history["sessions"].append(today_entry)
+
+# Update based on type
+if update_type == "completed":
+    today_entry["completed"] = today_entry.get("completed", 0) + 1
+    today_entry["total_focus_minutes"] = today_entry.get("total_focus_minutes", 0) + minutes
+elif update_type == "forfeited":
+    today_entry["forfeited"] = today_entry.get("forfeited", 0) + 1
+
+# Keep only last 30 days of history to prevent unbounded growth
+history["sessions"] = sorted(history["sessions"], key=lambda x: x["date"], reverse=True)[:30]
+
+# Write back
+with open(history_file, 'w') as f:
+    json.dump(history, f, indent=2)
+PYTHON_EOF
+}
 
 # Default state for initialization or recovery
 DEFAULT_STATE='{"status":"idle","remaining":1500,"total":1500,"sessions_today":0,"last_date":"","type":"focus"}'
@@ -145,6 +238,20 @@ elif [ "$STATUS" == "paused" ]; then
     echo "Forfeit | sfimage=xmark.circle color=$ACTION_RED size=15 bash=\"$SCRIPT_PATH\" param1=forfeit terminal=false refresh=true"
 fi
 echo "---"
+# Calm mode - launch the break sanctuary
+if [ "$BREAK_SCREEN_ENABLED" = true ]; then
+    if [ "$STATUS" == "break" ]; then
+        # During a break, open the full-screen sanctuary
+        echo "Open Sanctuary | sfimage=leaf.fill color=$SAGE size=15 bash=\"$SCRIPT_PATH\" param1=open_sanctuary terminal=false"
+    else
+        # When idle or in focus, offer calm mode as a quick mental reset
+        echo "Calm Mode | sfimage=sparkles color=#8B7355 size=15 bash=\"$SCRIPT_PATH\" param1=calm_mode terminal=false"
+        echo "-- 1 min | bash=\"$SCRIPT_PATH\" param1=calm_mode param2=1 terminal=false"
+        echo "-- 3 min | bash=\"$SCRIPT_PATH\" param1=calm_mode param2=3 terminal=false"
+        echo "-- 5 min | bash=\"$SCRIPT_PATH\" param1=calm_mode param2=5 terminal=false"
+    fi
+fi
+echo "---"
 echo "Quit SwiftBar | bash='pkill' param1='-x' param2='SwiftBar' terminal=false"
 
 # Handle commands
@@ -172,10 +279,35 @@ case "$1" in
         echo "{\"status\":\"$TYPE\",\"remaining\":$REMAINING,\"total\":$REMAINING,\"sessions_today\":$SESSIONS,\"last_date\":\"$TODAY\",\"type\":\"$TYPE\",\"start_time\":$(date +%s)}" > "$STATE_FILE"
         ;;
     "forfeit")
+        # Track forfeited session in history (only if we were in focus, not break)
+        if [ "$TYPE" == "focus" ] && [ "$STATUS" != "idle" ]; then
+            update_history "forfeited"
+        fi
         echo "{\"status\":\"idle\",\"remaining\":$FOCUS_DURATION,\"total\":$FOCUS_DURATION,\"sessions_today\":$SESSIONS,\"last_date\":\"$TODAY\",\"type\":\"focus\"}" > "$STATE_FILE"
         ;;
     "reset")
         echo "{\"status\":\"idle\",\"remaining\":$FOCUS_DURATION,\"total\":$FOCUS_DURATION,\"sessions_today\":0,\"last_date\":\"$TODAY\",\"type\":\"focus\"}" > "$STATE_FILE"
+        ;;
+    "preview_break")
+        # Create a temporary break state for preview (30 seconds)
+        PREVIEW_DUR=30
+        echo "{\"status\":\"break\",\"remaining\":$PREVIEW_DUR,\"total\":$PREVIEW_DUR,\"sessions_today\":$SESSIONS,\"last_date\":\"$TODAY\",\"type\":\"break\",\"start_time\":$(date +%s)}" > "$STATE_FILE"
+        launch_break_screen
+        ;;
+    "calm_mode")
+        # Enter calm mode - a standalone sanctuary moment (doesn't affect timer)
+        CALM_MINUTES=${2:-2}
+        CALM_SECS=$((CALM_MINUTES * 60))
+        # Save current state to restore after
+        cp "$STATE_FILE" "$STATE_DIR/state_backup.json" 2>/dev/null || true
+        # Create calm mode state
+        echo "{\"status\":\"break\",\"remaining\":$CALM_SECS,\"total\":$CALM_SECS,\"sessions_today\":$SESSIONS,\"last_date\":\"$TODAY\",\"type\":\"calm\",\"start_time\":$(date +%s)}" > "$STATE_FILE"
+        launch_break_screen
+        # Note: state will be restored when break screen reads non-break status or closes
+        ;;
+    "open_sanctuary")
+        # Open the sanctuary during an existing break
+        launch_break_screen
         ;;
     *)
         # Check for timer completion (remaining is calculated from start_time above, no decrementing needed)
@@ -184,6 +316,9 @@ case "$1" in
                 # Timer complete!
                 if [ "$STATUS" == "focus" ]; then
                     NEW_SESSIONS=$((SESSIONS + 1))
+                    # Calculate focus minutes completed and record in history
+                    FOCUS_MINUTES=$((TOTAL / 60))
+                    update_history "completed" "$FOCUS_MINUTES"
                     # Determine break type (long break every 4 sessions)
                     if [ $((NEW_SESSIONS % SESSIONS_FOR_LONG)) -eq 0 ]; then
                         BREAK_DUR=$LONG_BREAK
@@ -191,6 +326,8 @@ case "$1" in
                         BREAK_DUR=$SHORT_BREAK
                     fi
                     echo "{\"status\":\"break\",\"remaining\":$BREAK_DUR,\"total\":$BREAK_DUR,\"sessions_today\":$NEW_SESSIONS,\"last_date\":\"$TODAY\",\"type\":\"break\",\"start_time\":$(date +%s)}" > "$STATE_FILE"
+                    # Launch the break sanctuary
+                    launch_break_screen
                 else
                     # Break complete
                     echo "{\"status\":\"idle\",\"remaining\":$FOCUS_DURATION,\"total\":$FOCUS_DURATION,\"sessions_today\":$SESSIONS,\"last_date\":\"$TODAY\",\"type\":\"focus\"}" > "$STATE_FILE"

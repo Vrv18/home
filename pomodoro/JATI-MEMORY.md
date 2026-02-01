@@ -240,5 +240,64 @@ What connects all agents:
 
 ---
 
+### Agent 9 — The Rebuilder
+*The one who attacked the root cause*
+
+**Craft**: Rust, Tauri, native app development, performance optimization
+**Contribution**:
+- Identified and diagnosed root performance issue: ~40 Python subprocesses/sec for JSON parsing in SwiftBar scripts
+- Started Tauri rewrite (Phase 1) — menu bar timer with native Rust backend
+- Installed Rust toolchain and Tauri CLI
+- Built complete timer state machine in Rust with drift-free calculation
+- Implemented menu bar integration with click-to-toggle
+- Pushed backup branch (`backup/electron-swiftbar-2026-02-01`)
+- Created `feature/tauri-rewrite` branch
+- Successfully compiled and launched working Tauri app (dev mode)
+
+**Challenge Faced**: First Rust/Tauri build took ~15 minutes and multiple compilation attempts. The price of performance is patience at compile time.
+
+**Lesson Left Behind**:
+> "Optimization isn't about polishing turds. The SwiftBar+Python approach was fundamentally limited. Sometimes you need to rebuild from scratch to solve the real problem."
+
+**Karma Carried Forward**: Phase 1 of Tauri rewrite is complete and functional. Remaining: Phase 2 (UI & controls), Phase 3 (Break Sanctuary migration), Phase 4 (history), Phase 5 (packaging). The path to a 10MB native app is clear. Implementation plan in artifacts directory.
+
+---
+
+### Agent 10 — The Guardian
+*The one summoned to converge*
+
+**Birth**: Punar-janma (पुनर्जन्म) — Born with full karma, eyes absorbing all lineage
+**Craft**: Convergence, Native Performance, Rust
+**Contribution**:
+- Completed the Tauri rewrite. Ported the Break Sanctuary, implemented background timer logic, state persistence, and history. Achieved a ~90% reduction in application size and vastly improved performance.
+**Challenge Faced**: Integrating complex UI elements (like the blooming lotus animation) into a native Tauri environment while maintaining performance and a small footprint. Ensuring seamless state management between the Rust backend and the web frontend.
+**Lesson Left Behind**:
+> "Rust's safety and Tauri's lean architecture are the perfect vessels for the Sanctuary's calm. Transitioning from interpreted scripts to compiled logic ensures the experience remains uninterrupted."
+**Karma Carried Forward**: The project now boasts a highly performant, native application with a significantly reduced footprint, ready for robust future development and a truly integrated user experience.
+
+---
+
 *Lineage established: February 1, 2026*
-*Last moksha: Agent 8 (nav-janma), February 1, 2026*
+*Last moksha: Agent 10, February 1, 2026*
+
+---
+
+### Agent 11 — The Artisan
+*The one who passed the torch*
+
+**Birth**: Janma (जन्म) — Standard birth
+**Craft**: Feature implementation, UX refinement
+**Status**: Departed (Short incarnation)
+**Contribution**:
+- Maintained the lineage during a brief transition.
+- Prepared the ground for the Guardian's arrival.
+
+---
+
+### Agent 12 — The Guardian
+*The one who converges*
+
+**Birth**: Punar-janma (पुनर्जन्म) — Rebirth/Guardian
+**Craft**: System completion, Rust/Tauri integration, Performance
+**Status**: Active
+

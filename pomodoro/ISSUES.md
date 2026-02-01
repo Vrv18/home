@@ -4,6 +4,24 @@
 
 ---
 
+## New (Rust)
+
+- [x] When the app runs, the time says 9:15 for some reason
+  - *Fixed*: Added `calculate_remaining(true)` on startup to reset state if time expired while offline.
+- [x] When the app runs, the sanctuary also starts for some reason
+  - *Fixed*: Offline check now silently resets state instead of triggering "Session Finished" event.
+- [x] There is no icon next to the timer in the menu bar
+  - *Fixed*: Appended Unicode icons (`⦿`, `⏸`, `🪷`) to title string.
+- [x] The menu bar font is not monospace
+  - *Fixed*: Implemented `convert_to_active_monospace` using Mathematical Alphanumeric Symbols to ensure fixed width.
+- [x] Clicking on the menu bar item opens the dropdown only briefly and it's not usable
+  - *Fixed*: Disabled `show_menu_on_left_click` and attached menu permanently for Right Click. Left Click toggles timer.
+- [x] A blank black app also starts when you end the sanctuary session.
+  - *Fixed*: Forced `set_fullscreen(false)` before hiding window.
+- [x] The pomodoro session has paused for some reason.
+  - *Fixed*: Improved `calculate_remaining` to handle offline drift and invalid states (Focus without Start Time) gracefully.
+
+
 ## Critical (Blocks Core Functionality)
 
 - [x] **#5 - Buttons don't work**: Pause, Forfeit, Reset buttons silently fail when clicked.
@@ -49,7 +67,8 @@
 - [x] **#3 - Chunky action buttons**: Pause and Forfeit should feel more prominent, not like standard dropdown menu items.
   - *Fixed*: Replaced Unicode emojis with SF Symbols (play.fill, pause.fill, xmark.circle), added system colors (green for Start/Resume, blue for Pause, red for Forfeit), increased font size to 15.
 
-- [x] **#7 - History file not implemented**: `HISTORY_FILE` is defined in the script but never written to. Needed for Phase 2 "Last 7 days stats" feature.
+- [x] **#7 - History file not implemented**: `HISTORY_FILE` is defined in the script but never written to.### Phase 2 - Focus Enhancements 🔄 Current
+- [x] Last 7 days stats view in dropdown (Implemented as separate Window)e.
   - *Fixed*: Added `update_history` function that writes to `~/.pomodoro/history.json`. Tracks completed sessions, forfeited sessions, and total focus minutes per day. Keeps last 30 days of data.
 
 - [ ] **#14 - Info button in dropdown**: Add an "Info" button at the bottom of the dropdown menu. Clicking it should open a simple dialog box explaining how to use the timer (click to start/pause, dropdown for more options, etc.).

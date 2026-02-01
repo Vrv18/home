@@ -1,0 +1,22 @@
+[package]
+name = "pomodoro-native"
+version = "1.0.0"
+description = "Hoysala-inspired Pomodoro timer for macOS menu bar"
+authors = ["Pomodoro Team"]
+edition = "2021"
+
+[lib]
+name = "pomodoro_native_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon"] }
+tauri-plugin-opener = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+chrono = "0.4"
+home = "0.5"
+

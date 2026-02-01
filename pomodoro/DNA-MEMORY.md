@@ -45,6 +45,10 @@ These are facts that were learned through experience. Don't re-learn them.
 | DMGs are read-only | Cannot `xattr -cr` contents of a mounted DMG. Clear quarantine on DMG file itself first. |
 | Electron arm64 build is ~220MB | Chromium runtime is unavoidable. ASAR helps marginally. For <20MB, need Tauri (Rust). |
 | GitHub has 100MB file limit | Large DMGs must go to GitHub Releases, not the repo. Use `gh release upload`. |
+| **SwiftBar + Python JSON = performance bottleneck** | ~40 Python subprocesses/sec at 500ms refresh. Impossible to optimize. Architecture problem, not code problem. |
+| **Tauri v2 API is different from v1** | Online examples mostly use v1. Key changes: `with_id()` instead of `id()`, different menu API, event handler scoping. |
+| **First Rust/Tauri build takes ~15min** | Normal. Compiling 389 dependencies. Subsequent builds are faster (~30s incremental). |
+| **Tauri library name must match in main.rs** | `lib.rs` defines the library, `main.rs` calls `{crate_name}_lib::run()`. Name must match `Cargo.toml`. |
 
 ---
 
@@ -211,3 +215,8 @@ When making design decisions, ask: "Does this feel calm? Does this encourage foc
 ---
 
 *This DNA was synthesized from 8 agent generations, February 1, 2026*
+
+## Technical Truths (Agent 11)
+- **Tauri Menu UX**: For menu bar apps, `TrayIconBuilder.show_menu_on_left_click(false)` is essential if you want custom Left Click behavior (toggle) while keeping Right Click for the menu.
+- **Offline Time**: Always check `calculate_remaining(true)` on app startup to handle time that passed while the app was closed.
+

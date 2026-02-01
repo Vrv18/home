@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus Stats</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="stats.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="icon">📊</div>
+            <h1>Your Focus Journey</h1>
+        </header>
+
+        <section class="summary-card">
+            <div class="stat-item">
+                <span class="label">Today's Focus</span>
+                <span class="value" id="today-minutes">0</span>
+                <span class="unit">min</span>
+            </div>
+            <div class="divider-vertical"></div>
+            <div class="stat-item">
+                <span class="label">Sessions</span>
+                <span class="value" id="today-sessions">0</span>
+            </div>
+        </section>
+
+        <section class="chart-section">
+            <h2>Last 7 Days</h2>
+            <div class="chart-container" id="week-chart">
+                <!-- Bars will be injected here by JS -->
+            </div>
+            <div class="chart-labels" id="week-labels">
+                <!-- Date labels will be injected here -->
+            </div>
+        </section>
+
+        <section class="insight-card">
+            <p id="insight-text">"The mind is like water. When it is turbulent, it is difficult to see. When it is calm,
+                everything becomes clear."</p>
+        </section>
+
+        <button id="close-btn" class="close-btn">Close</button>
+    </div>
+    <script src="stats.js" type="module"></script>
+</body>
+
+</html>

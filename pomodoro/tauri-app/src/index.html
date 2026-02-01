@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Break Sanctuary</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="/main.js" defer></script>
+</head>
+<body>
+  <div class="sanctuary">
+    <!-- Animated background layers -->
+    <div class="bg-layer bg-stone"></div>
+    <div class="bg-layer bg-pattern"></div>
+    <div class="bg-layer bg-vignette"></div>
+    
+    <!-- Floating particles -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- Main content -->
+    <div class="content">
+      <!-- Lotus animation container -->
+      <div class="lotus-container">
+        <svg class="lotus" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- Center circle -->
+          <circle class="lotus-center" cx="100" cy="100" r="12" />
+          
+          <!-- Inner petals (8) -->
+          <g class="petals-inner">
+            <path class="petal petal-1" d="M100,100 Q100,60 100,40 Q115,70 100,100" />
+            <path class="petal petal-2" d="M100,100 Q140,100 160,100 Q130,115 100,100" />
+            <path class="petal petal-3" d="M100,100 Q100,140 100,160 Q85,130 100,100" />
+            <path class="petal petal-4" d="M100,100 Q60,100 40,100 Q70,85 100,100" />
+            <path class="petal petal-5" d="M100,100 Q128,72 142,58 Q122,88 100,100" />
+            <path class="petal petal-6" d="M100,100 Q128,128 142,142 Q112,122 100,100" />
+            <path class="petal petal-7" d="M100,100 Q72,128 58,142 Q78,112 100,100" />
+            <path class="petal petal-8" d="M100,100 Q72,72 58,58 Q88,78 100,100" />
+          </g>
+          
+          <!-- Outer petals (8) - larger -->
+          <g class="petals-outer">
+            <path class="petal petal-outer-1" d="M100,100 Q100,45 100,20 Q120,60 100,100" />
+            <path class="petal petal-outer-2" d="M100,100 Q155,100 180,100 Q140,120 100,100" />
+            <path class="petal petal-outer-3" d="M100,100 Q100,155 100,180 Q80,140 100,100" />
+            <path class="petal petal-outer-4" d="M100,100 Q45,100 20,100 Q60,80 100,100" />
+            <path class="petal petal-outer-5" d="M100,100 Q138,62 157,43 Q127,83 100,100" />
+            <path class="petal petal-outer-6" d="M100,100 Q138,138 157,157 Q117,127 100,100" />
+            <path class="petal petal-outer-7" d="M100,100 Q62,138 43,157 Q73,117 100,100" />
+            <path class="petal petal-outer-8" d="M100,100 Q62,62 43,43 Q83,73 100,100" />
+          </g>
+        </svg>
+      </div>
+      
+      <!-- Timer display -->
+      <div class="timer-section">
+        <div class="timer-label" id="timerLabel">Take a breath</div>
+        <div class="timer-display">
+          <span class="timer-value" id="timerValue">--:--</span>
+        </div>
+        <div class="timer-subtitle" id="timerSubtitle">Your mind is settling</div>
+      </div>
+      
+      <!-- Progress ring around lotus -->
+      <svg class="progress-ring" viewBox="0 0 260 260">
+        <circle 
+          class="progress-ring-bg" 
+          cx="130" cy="130" r="120"
+          fill="none" 
+          stroke-width="2"
+        />
+        <circle 
+          class="progress-ring-fill" 
+          id="progressRing"
+          cx="130" cy="130" r="120"
+          fill="none" 
+          stroke-width="3"
+          stroke-linecap="round"
+          transform="rotate(-90 130 130)"
+        />
+      </svg>
+      
+      <!-- Skip button (subtle) -->
+      <button class="skip-btn" id="skipBtn">
+        <span>End break early</span>
+      </button>
+      
+      <!-- Hint to return to stillness -->
+      <div class="stillness-hint">Click anywhere to return to stillness</div>
+    </div>
+    
+    <!-- Completion message (hidden by default) -->
+    <div class="completion-overlay" id="completionOverlay">
+      <div class="completion-content">
+        <div class="completion-lotus">🪷</div>
+        <div class="completion-text">Ready to focus</div>
+      </div>
+    </div>
+  </div>
+  
+  <audio id="ambientSound" loop preload="auto">
+    <source src="/assets/sounds/ambient.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="bellSound" preload="auto">
+    <source src="/assets/sounds/bell.mp3" type="audio/mpeg">
+  </audio>
+</body>
+</html>

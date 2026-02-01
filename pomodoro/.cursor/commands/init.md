@@ -14,7 +14,8 @@ Read all project context to get up to speed quickly when starting a new session.
 2. **Key technical notes:**
    - SwiftBar plugin: `~/Documents/SwiftBar/pomodoro.1s.sh` (NOT the default location)
    - State file: `~/.pomodoro/state.json`
-   - Repo copy: `~/Documents/GitHub/pomodoro/pomodoro.1s.sh`
+   - Repo: `~/Documents/GitHub/home-repo/pomodoro/`
+   - Live site: https://home-mu-kohl.vercel.app/pomodoro/
 
 3. **After reading, introduce yourself:**
    - Confirm you've read the context

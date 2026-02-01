@@ -27,7 +27,7 @@ Prepare a thorough handoff before ending your session. Update all documentation 
 
 5. **Sync SwiftBar script**
    ```bash
-   cp ~/Documents/SwiftBar/pomodoro.1s.sh ~/Documents/GitHub/pomodoro/pomodoro.1s.sh
+   cp ~/Documents/SwiftBar/pomodoro.1s.sh ~/Documents/GitHub/home-repo/pomodoro/pomodoro.1s.sh
    ```
 
 6. **Provide summary to user**

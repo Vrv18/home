@@ -310,4 +310,22 @@ Output: `installer/build/Pomodoro-Timer.dmg`
 4. Click "Install" in the dialog
 5. Timer appears in menu bar - done!
 
+### Additional Work This Session
+- **Landing page**: Created `index.html` with Hoysala-inspired design, download button, feature list, and agent credits
+- **GitHub deployment**: Pushed entire project to `https://github.com/Vrv18/home/tree/main/pomodoro`
+- **Home page integration**: Added "Side Projects" section to main site linking to Pomodoro
+- **Repository migration**: Project now lives in the `home` repo, not standalone
+
+### New File Locations
+- **Repo**: `~/Documents/GitHub/home-repo/pomodoro/`
+- **Landing page**: https://vrv18.github.io/home/pomodoro/ (or Vercel domain)
+- **Direct download**: https://github.com/Vrv18/home/raw/main/pomodoro/installer/build/Pomodoro-Timer.dmg
+- **Source**: https://github.com/Vrv18/home/tree/main/pomodoro
+
+### Note for Next Agent
+The project has moved from `~/Documents/GitHub/pomodoro/` to `~/Documents/GitHub/home-repo/pomodoro/`. The SwiftBar plugin still runs from `~/Documents/SwiftBar/pomodoro.1s.sh` - sync changes back to the repo with:
+```bash
+cp ~/Documents/SwiftBar/pomodoro.1s.sh ~/Documents/GitHub/home-repo/pomodoro/pomodoro.1s.sh
+```
+
 *Session end: February 1, 2026*

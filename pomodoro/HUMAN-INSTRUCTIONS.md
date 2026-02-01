@@ -8,7 +8,8 @@
 
 *Things the agents need you to do or verify.*
 
-- [ ] **Test DMG installer** - The distributable package is ready at `installer/build/Pomodoro-Timer.dmg`. Test on a fresh Mac if possible (or have your wife try it!). (Feb 1, 2026)
+- [ ] **Test DMG installer on wife's Mac** - Send her the DMG via AirDrop and verify the full install flow works. (Feb 1, 2026)
+- [ ] **Verify landing page** - Check https://home-mu-kohl.vercel.app/pomodoro/ looks correct (Feb 1, 2026)
 
 ### Previously Verified
 - [x] **Verify click-to-toggle** - Clicking the menu bar item should: start timer (when idle), pause (when running), resume (when paused). Idle state now shows "25:00" greyed out. (Feb 1, 2026)

@@ -40,15 +40,22 @@ These are facts that were learned through experience. Don't re-learn them.
 | SwiftBar dropdown content freezes while open | Not a bug, not fixable. Document and move on. |
 | Timer drift happens with naive decrement | Calculate from `start_time` instead of decrementing `remaining`. |
 | `osascript` notifications open Script Editor | macOS quirk with the "Show" button. We removed notifications entirely. |
+| SwiftBar prefs must be set BEFORE launch | If SwiftBar launches before `defaults write`, it prompts for folder selection. Kill it first. |
+| Downloaded apps show "damaged" error | macOS Gatekeeper. Fix with `xattr -cr /path/to/app` or right-click → Open. |
+| DMGs are read-only | Cannot `xattr -cr` contents of a mounted DMG. Clear quarantine on DMG file itself first. |
+| Electron arm64 build is ~220MB | Chromium runtime is unavoidable. ASAR helps marginally. For <20MB, need Tauri (Rust). |
+| GitHub has 100MB file limit | Large DMGs must go to GitHub Releases, not the repo. Use `gh release upload`. |
 
 ---
 
 ## File Locations (Memorize These)
 
 ```
-~/Documents/SwiftBar/pomodoro.1s.sh    # The LIVE script (SwiftBar reads this)
-~/.pomodoro/state.json                  # Timer state (status, remaining, sessions)
-~/Documents/GitHub/home-repo/pomodoro/  # The repository (source of truth)
+~/Documents/SwiftBar/pomodoro.1s.sh         # The LIVE script (SwiftBar reads this)
+~/Documents/SwiftBar/Break Sanctuary.app    # The break screen Electron app
+~/.pomodoro/state.json                      # Timer state (status, remaining, sessions)
+~/.pomodoro/history.json                    # Session history (completed, forfeited, minutes)
+~/Documents/GitHub/home-repo/pomodoro/      # The repository (source of truth)
 ```
 
 ## The Memory System
@@ -184,15 +191,23 @@ When making design decisions, ask: "Does this feel calm? Does this encourage foc
 ## Unfinished Business
 
 ### Phase 2 (Focus Enhancements)
-- [ ] Last 7 days stats view
+- [ ] Last 7 days stats view in dropdown
 - [ ] Extend focus (+5 min focus = +1 min break earned)
 - [ ] Forfeit with optional reason
 - [ ] 10-second countdown before break
 - [ ] Auto-lock macOS when break begins
 
-### Open Issue
-- #7: History file not implemented (needed for stats)
+### Phase 3 (Break Experience) ✅ Largely Complete
+- [x] Full-screen break mode window (Break Sanctuary)
+- [x] Calming visual animation with timer (blooming lotus)
+- [x] Light mode design with Hoysala aesthetics
+- [x] Calm Mode (enter stillness anytime from menu)
+- [ ] Settings panel for custom durations
+- [ ] Launch at login
+
+### Open Issues
+- #14: Info button in dropdown
 
 ---
 
-*This DNA was synthesized from 5 agent generations, February 1, 2026*
+*This DNA was synthesized from 8 agent generations, February 1, 2026*

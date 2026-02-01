@@ -1,13 +1,14 @@
 #!/bin/bash
 
 # Build the Break Sanctuary as a standalone Electron app
-# This creates a .app bundle that can be distributed without Node.js
+# Uses electron-builder with ASAR packaging for smaller size
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 BUILD_DIR="$SCRIPT_DIR/build"
+BREAK_SRC="$PROJECT_DIR/src/break-screen"
 
 echo "🪷 Building Break Sanctuary app..."
 
@@ -19,56 +20,47 @@ if [ ! -d "node_modules" ]; then
     npm install
 fi
 
-# Create a temporary package.json for the break screen build
-cat > "$PROJECT_DIR/src/break-screen/package.json" << 'EOF'
-{
-  "name": "break-sanctuary",
-  "version": "1.0.0",
-  "description": "Break Sanctuary - Hoysala inspired break screen",
-  "main": "main.js",
-  "author": "",
-  "license": "MIT"
-}
-EOF
-
-# Use electron-packager to create standalone app
-echo "📦 Packaging Break Sanctuary..."
-
-# Check if electron-packager is available, if not use npx
-if ! command -v electron-packager &> /dev/null; then
-    npx electron-packager "$PROJECT_DIR/src/break-screen" "Break Sanctuary" \
-        --platform=darwin \
-        --arch=universal \
-        --out="$BUILD_DIR" \
-        --overwrite \
-        --app-bundle-id=com.pomodoro.break-sanctuary \
-        --app-version=1.0.0 \
-        --icon="$PROJECT_DIR/src/assets/icons/break.png" \
-        --prune=true
-else
-    electron-packager "$PROJECT_DIR/src/break-screen" "Break Sanctuary" \
-        --platform=darwin \
-        --arch=universal \
-        --out="$BUILD_DIR" \
-        --overwrite \
-        --app-bundle-id=com.pomodoro.break-sanctuary \
-        --app-version=1.0.0 \
-        --icon="$PROJECT_DIR/src/assets/icons/break.png" \
-        --prune=true
+# Install electron-builder if not present
+if ! npx electron-builder --version &> /dev/null; then
+    echo "📦 Installing electron-builder..."
+    npm install --save-dev electron-builder
 fi
 
-# Clean up temporary package.json
-rm "$PROJECT_DIR/src/break-screen/package.json"
+# Install electron in break-screen folder if needed
+echo "📦 Setting up Break Sanctuary build environment..."
+cd "$BREAK_SRC"
+if [ ! -d "node_modules/electron" ]; then
+    npm install --prefer-offline
+fi
+
+# Build using electron-builder with ASAR packaging
+echo "📦 Packaging Break Sanctuary with ASAR..."
+
+# Run electron-builder from project root to use its electron-builder
+cd "$PROJECT_DIR"
+npx electron-builder --mac --dir \
+    --project "$BREAK_SRC" \
+    --config.directories.output="$BUILD_DIR/break-build"
 
 # Move to expected location
-BREAK_APP="$BUILD_DIR/Break Sanctuary-darwin-universal/Break Sanctuary.app"
+BREAK_APP="$BUILD_DIR/break-build/mac-arm64/Break Sanctuary.app"
+if [ ! -d "$BREAK_APP" ]; then
+    # Try alternate path
+    BREAK_APP="$BUILD_DIR/break-build/mac/Break Sanctuary.app"
+fi
+
 if [ -d "$BREAK_APP" ]; then
     # Move to build root
     rm -rf "$BUILD_DIR/Break Sanctuary.app"
     mv "$BREAK_APP" "$BUILD_DIR/"
-    rm -rf "$BUILD_DIR/Break Sanctuary-darwin-universal"
-    echo "✅ Break Sanctuary app built: $BUILD_DIR/Break Sanctuary.app"
+    rm -rf "$BUILD_DIR/break-build"
+    
+    # Show final size
+    APP_SIZE=$(du -sh "$BUILD_DIR/Break Sanctuary.app" | cut -f1)
+    echo "✅ Break Sanctuary app built: $BUILD_DIR/Break Sanctuary.app ($APP_SIZE)"
 else
     echo "❌ Failed to build Break Sanctuary app"
+    echo "Looking for app in: $BUILD_DIR/break-build/"
+    ls -la "$BUILD_DIR/break-build/" 2>/dev/null || true
     exit 1
 fi

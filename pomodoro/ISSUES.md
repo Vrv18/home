@@ -55,6 +55,12 @@
 - [ ] **#14 - Info button in dropdown**: Add an "Info" button at the bottom of the dropdown menu. Clicking it should open a simple dialog box explaining how to use the timer (click to start/pause, dropdown for more options, etc.).
   - *Status*: Not currently being worked on.
 
+- [ ] **#15 - Installer Gatekeeper issues**: Downloaded DMG and installer app trigger macOS "damaged and can't be opened" warning. Requires `xattr -cr` or right-click → Open to bypass.
+  - *Status*: Documented in README. Would need Apple Developer signing to fully fix (~$99/year).
+
+- [ ] **#16 - Break Sanctuary size**: Electron bundle is 85MB (220MB uncompressed). Could be reduced to ~10MB with Tauri rewrite.
+  - *Status*: Accepted for now. Tauri would require Rust expertise.
+
 - [x] **#8 - Dead code cleanup**: The `tick` command case (lines 149-157) is never called. The default `*` case handles all timer updates. Should remove for clarity.
   - *Fixed*: Removed dead `tick` case. Timer now uses start_time-based calculation, no tick needed.
 

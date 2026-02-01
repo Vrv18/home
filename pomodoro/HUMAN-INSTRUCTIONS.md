@@ -8,8 +8,10 @@
 
 *Things the agents need you to do or verify.*
 
-- [ ] **Test DMG installer on wife's Mac** - Send her the DMG via AirDrop and verify the full install flow works. (Feb 1, 2026)
-- [ ] **Verify landing page** - Check https://home-mu-kohl.vercel.app/pomodoro/ looks correct (Feb 1, 2026)
+- [ ] **Complete DMG installer test** - Currently testing. If Gatekeeper blocks, use `xattr -cr` on DMG or right-click → Open on installer. (Feb 1, 2026)
+- [ ] **Test Break Sanctuary launch** - After install, start a 5-min focus and let it complete. Break Sanctuary should launch automatically. (Feb 1, 2026)
+- [ ] **Test Calm Mode** - From dropdown, click "Calm Mode" and verify the sanctuary appears. (Feb 1, 2026)
+- [ ] **Upload optimized DMG** - If current test passes, upload the 85MB DMG (arm64 + ASAR) to GitHub Releases. (Feb 1, 2026)
 
 ### Previously Verified
 - [x] **Verify click-to-toggle** - Clicking the menu bar item should: start timer (when idle), pause (when running), resume (when paused). Idle state now shows "25:00" greyed out. (Feb 1, 2026)

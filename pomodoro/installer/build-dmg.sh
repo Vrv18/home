@@ -93,15 +93,15 @@ EOF
 # Add Applications symlink for drag-install of SwiftBar (if user wants)
 ln -s /Applications "$DMG_STAGE/Applications"
 
-# Step 5: Create the DMG
-echo "💿 Creating DMG..."
+# Step 5: Create the DMG with maximum compression
+echo "💿 Creating DMG with maximum compression..."
 DMG_PATH="$BUILD_DIR/$DMG_NAME.dmg"
 rm -f "$DMG_PATH"
 
-# Create DMG using hdiutil
+# Create DMG using hdiutil with bzip2 compression (smaller than default zlib)
 hdiutil create -volname "$VOLUME_NAME" \
     -srcfolder "$DMG_STAGE" \
-    -ov -format UDZO \
+    -ov -format UDBZ \
     "$DMG_PATH"
 
 # Cleanup staging

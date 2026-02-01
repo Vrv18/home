@@ -43,10 +43,11 @@ A calming, distraction-free Pomodoro timer that encourages deep focus through th
 - [x] Configures SwiftBar preferences automatically
 - [x] No terminal or GitHub required for end users
 
-### Phase 3 - Break Experience
-- [ ] Full-screen "break mode" window (Electron)
-- [ ] Calming visual animation with timer
-- [ ] Light mode design with Hoysala aesthetics
+### Phase 3 - Break Experience ✅ Largely Complete
+- [x] Full-screen "break mode" window (Break Sanctuary - Electron)
+- [x] Calming visual animation with timer (blooming lotus, breathing animations)
+- [x] Light mode design with Hoysala aesthetics
+- [x] Calm Mode — enter stillness anytime from menu bar
 - [ ] Settings panel for custom durations
 - [ ] Launch at login (SwiftBar)
 

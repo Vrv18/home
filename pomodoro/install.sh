@@ -1,37 +1,48 @@
 #!/bin/bash
 
 # Break Sanctuary Installer
-# 1. Builds the Tauri app (Release mode)
-# 2. Installs to /Applications
-# 3. Sets up Auto-Login
+# Installs the app to /Applications and sets up Auto-Login.
 
 APP_NAME="Break Sanctuary"
 APP_DIR="/Applications"
-SOURCE_DIR="tauri-app"
+RELEASE_URL="https://github.com/Vrv18/home/releases/latest/download/Break.Sanctuary.dmg" # TODO: Update this when Release is created
 
 echo "🪷  Installing $APP_NAME..."
 
-# 1. Build
-echo "📦  Building Release Binary..."
-cd "$SOURCE_DIR"
-if npm run tauri build; then
-    echo "✅  Build Successful."
+# 1. Download / Build
+# If we are running from source repo, build it.
+if [ -f "tauri-app/package.json" ]; then
+    echo "📦  Detected source code. Building from source..."
+    cd "tauri-app"
+    npm install
+    npm run tauri build
+    cd ..
+    TARGET_APP="tauri-app/src-tauri/target/release/bundle/macos/$APP_NAME.app"
 else
-    echo "❌  Build Failed."
-    exit 1
+    # Remote Install Mode: Download DMG
+    echo "⬇️   Downloading latest release..."
+    curl -L -o "/tmp/$APP_NAME.dmg" "$RELEASE_URL"
+    
+    # Mount and Copy
+    hdiutil attach "/tmp/$APP_NAME.dmg" -mountpoint "/Volumes/$APP_NAME"
+    TARGET_APP="/Volumes/$APP_NAME/$APP_NAME.app"
 fi
 
 # 2. Install
-TARGET_APP="src-tauri/target/release/bundle/macos/$APP_NAME.app"
-
 if [ -d "$TARGET_APP" ]; then
     echo "📂  Moving to $APP_DIR..."
-    # Remove existing if present
     rm -rf "$APP_DIR/$APP_NAME.app"
     cp -R "$TARGET_APP" "$APP_DIR/"
+    
+    # Cleanup (if downloaded)
+    if [ ! -f "tauri-app/package.json" ]; then
+        hdiutil detach "/Volumes/$APP_NAME"
+        rm "/tmp/$APP_NAME.dmg"
+    fi
+    
     echo "✅  Installed to $APP_DIR/$APP_NAME.app"
 else
-    echo "❌  Could not find built app at $TARGET_APP"
+    echo "❌  Installation failed. Could not find app bundle."
     exit 1
 fi
 
@@ -41,8 +52,5 @@ osascript -e "tell application \"System Events\" to make login item at end with 
 
 echo ""
 echo "🎉  Installation Complete!"
-echo "    $APP_NAME has been added to your Login Items."
-echo "    You can launch it now from Spotlight or Applications."
-echo ""
-echo "    To launch immediately:"
-echo "    open -a \"$APP_NAME\""
+echo "    App is ready in your Applications folder and set to start at login."
+echo "    Run 'open -a \"$APP_NAME\"' to start now."

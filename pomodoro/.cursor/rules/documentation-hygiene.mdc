@@ -1,0 +1,33 @@
+---
+description: Keep project documentation updated as you work
+alwaysApply: true
+---
+
+# Documentation Hygiene
+
+This project uses four living documents. Update them as you work, not just at the end.
+
+## Files to Maintain
+
+| File | Purpose | When to Update |
+|------|---------|----------------|
+| `PLAN.md` | Roadmap, architecture, design decisions | Mark tasks complete, add new phases, update technical notes |
+| `ISSUES.md` | Bugs, UX issues, improvements | Add new issues found, mark resolved with `[x]` and brief note |
+| `HANDOFF.md` | Context for the next agent | Add learnings, update technical notes, leave feedback |
+| `HUMAN-INSTRUCTIONS.md` | Actions and decisions for the human | Add pending tasks, decisions needed, tips |
+
+## Guidelines
+
+- **ISSUES.md**: When you fix something, mark it `[x]` and add a one-line summary. When you find something broken, add it with severity.
+
+- **PLAN.md**: When you complete a Phase item, mark it `[x]`. If architecture changes, update the diagram.
+
+- **HANDOFF.md**: Add genuine learnings. What would help the next agent? What did you try that didn't work?
+
+- **HUMAN-INSTRUCTIONS.md**: Add actions you need the human to take (testing, decisions, installs). Move completed items to the "Completed" section.
+
+## Don't
+
+- Don't defer documentation to "later" — update as you go
+- Don't leave issues unmarked after fixing them
+- Don't add fluff — keep notes concise and useful

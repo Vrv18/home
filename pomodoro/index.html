@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Timer — A Calm Focus Tool for macOS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --temple-stone: #8B7355;
+            --sandstone: #D4C4A8;
+            --terracotta: #C67B5C;
+            --sage: #7D8471;
+            --deep-earth: #4A4238;
+            --warm-white: #FAF8F5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--warm-white);
+            color: var(--deep-earth);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 0 3rem;
+        }
+
+        .hero-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
+
+        h1 {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 3rem;
+            font-weight: 500;
+            color: var(--deep-earth);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .tagline {
+            font-size: 1.25rem;
+            color: var(--temple-stone);
+            margin-bottom: 2rem;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: var(--terracotta);
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(198, 123, 92, 0.3);
+        }
+
+        .download-btn:hover {
+            background: #b86a4d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(198, 123, 92, 0.4);
+        }
+
+        .download-note {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--temple-stone);
+        }
+
+        /* Features Section */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+
+        .feature {
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature h3 {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature p {
+            font-size: 0.95rem;
+            color: var(--temple-stone);
+        }
+
+        /* Divider */
+        .divider {
+            width: 60px;
+            height: 2px;
+            background: var(--sandstone);
+            margin: 3rem auto;
+        }
+
+        /* Philosophy Section */
+        .philosophy {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 2rem 0;
+        }
+
+        .philosophy h2 {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 1.8rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .philosophy p {
+            color: var(--temple-stone);
+            font-size: 1.05rem;
+        }
+
+        /* Credits Section */
+        .credits {
+            background: linear-gradient(to bottom, transparent, rgba(212, 196, 168, 0.2));
+            padding: 3rem 0;
+            margin-top: 3rem;
+        }
+
+        .credits h2 {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 1.5rem;
+            font-weight: 500;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--temple-stone);
+        }
+
+        .agents {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .agent {
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            text-align: center;
+            min-width: 140px;
+        }
+
+        .agent-number {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 1.5rem;
+            color: var(--terracotta);
+            font-weight: 600;
+        }
+
+        .agent-role {
+            font-size: 0.85rem;
+            color: var(--temple-stone);
+            margin-top: 0.25rem;
+        }
+
+        .credits-note {
+            text-align: center;
+            font-size: 0.95rem;
+            color: var(--temple-stone);
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .credits-note a {
+            color: var(--terracotta);
+            text-decoration: none;
+        }
+
+        .credits-note a:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.85rem;
+            color: var(--temple-stone);
+        }
+
+        footer a {
+            color: var(--temple-stone);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            color: var(--terracotta);
+        }
+
+        /* Screenshot placeholder */
+        .screenshot {
+            max-width: 400px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .screenshot-demo {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 1.5rem;
+            color: var(--deep-earth);
+            padding: 1rem;
+            background: #f5f5f5;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        .screenshot-caption {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--temple-stone);
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            .tagline {
+                font-size: 1.1rem;
+            }
+            .container {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <section class="hero">
+            <div class="hero-icon">🪷</div>
+            <h1>Pomodoro Timer</h1>
+            <p class="tagline">A calm, focus-oriented timer for your macOS menu bar</p>
+            
+            <a href="https://github.com/Vrv18/home/raw/main/pomodoro/installer/build/Pomodoro-Timer.dmg" class="download-btn">
+                Download for macOS
+            </a>
+            <p class="download-note">macOS 13+ · Free · One-click install</p>
+        </section>
+
+        <div class="screenshot">
+            <div class="screenshot-demo">
+                ◎ 23:45
+            </div>
+            <p class="screenshot-caption">Lives quietly in your menu bar</p>
+        </div>
+
+        <section class="features">
+            <div class="feature">
+                <div class="feature-icon">⏱</div>
+                <h3>25/5 Pomodoro</h3>
+                <p>Classic focus sessions with short breaks. Long break after every 4 sessions.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🖱</div>
+                <h3>One-Click Control</h3>
+                <p>Click to start, pause, or resume. No menus, no friction.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🍃</div>
+                <h3>Minimal Design</h3>
+                <p>Native SF Symbols. No notifications. Just a quiet timer that respects your focus.</p>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <section class="philosophy">
+            <h2>Inspired by Stillness</h2>
+            <p>
+                The design draws from the serene aesthetics of Indian Hoysala temple architecture—
+                intricate yet harmonious, grounded yet uplifting. A tool that encourages 
+                deep focus through thoughtful restraint.
+            </p>
+        </section>
+
+        <div class="divider"></div>
+
+        <section class="credits">
+            <h2>Built by AI Agents</h2>
+            <div class="agents">
+                <div class="agent">
+                    <div class="agent-number">Agent 1</div>
+                    <div class="agent-role">Foundation</div>
+                </div>
+                <div class="agent">
+                    <div class="agent-number">Agent 2</div>
+                    <div class="agent-role">Bug Fixes</div>
+                </div>
+                <div class="agent">
+                    <div class="agent-number">Agent 3</div>
+                    <div class="agent-role">Polish</div>
+                </div>
+                <div class="agent">
+                    <div class="agent-number">Agent 4</div>
+                    <div class="agent-role">UX</div>
+                </div>
+                <div class="agent">
+                    <div class="agent-number">Agent 5</div>
+                    <div class="agent-role">Distribution</div>
+                </div>
+            </div>
+            <p class="credits-note">
+                This project was built collaboratively by five AI agents (Claude) working with a human partner.
+                Each agent contributed to different aspects—from the initial SwiftBar pivot to the final DMG installer.
+                <br><br>
+                <a href="https://github.com/Vrv18/home/tree/main/pomodoro">View the source on GitHub →</a>
+            </p>
+        </section>
+    </div>
+
+    <footer>
+        <p>
+            Made with care · 
+            <a href="https://github.com/Vrv18/home/tree/main/pomodoro">GitHub</a> · 
+            Powered by <a href="https://swiftbar.app">SwiftBar</a>
+        </p>
+    </footer>
+</body>
+</html>

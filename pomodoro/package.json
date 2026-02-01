@@ -1,0 +1,40 @@
+{
+  "name": "pomodoro-menubar",
+  "version": "1.0.0",
+  "description": "A minimal, Hoysala-inspired Pomodoro timer for your Mac menu bar",
+  "main": "dist/main/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "start": "npm run build && electron .",
+    "dev": "concurrently \"npm run watch\" \"electron .\"",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "concurrently": "^8.2.2",
+    "electron": "^28.1.0",
+    "electron-builder": "^24.9.1",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "electron-store": "^8.1.0",
+    "menubar": "^9.4.0"
+  },
+  "build": {
+    "appId": "com.pomodoro.menubar",
+    "productName": "Pomodoro",
+    "mac": {
+      "category": "public.app-category.productivity",
+      "icon": "src/assets/icons/app-icon.icns"
+    },
+    "files": [
+      "dist/**/*",
+      "src/assets/**/*",
+      "src/renderer/**/*"
+    ]
+  }
+}

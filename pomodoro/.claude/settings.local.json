@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bash -c 'source pomodoro.1s.sh 2>/dev/null | head -30')",
+      "Bash(bash -c 'source pomodoro.1s.sh 2>/dev/null | head -25')",
+      "Bash(python3:*)",
+      "Bash(bash -c 'source pomodoro.1s.sh 2>/dev/null | grep -i extend')",
+      "Bash(~/.pomodoro/state.json)",
+      "Bash(bash -c:*)"
+    ]
+  }
+}

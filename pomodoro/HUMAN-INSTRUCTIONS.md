@@ -13,6 +13,11 @@
 - [ ] **Test Calm Mode** - From dropdown, click "Calm Mode" and verify the sanctuary appears. (Feb 1, 2026)
 - [ ] **Upload optimized DMG** - If current test passes, upload the 85MB DMG (arm64 + ASAR) to GitHub Releases. (Feb 1, 2026)
 
+### New from Agent 9
+- [ ] **Test Extend Focus** - Start a focus session, click "Extend +5 min" a few times. Verify timer adds 5 min and shows earned break time. Max 5 extensions. (Feb 1, 2026)
+- [ ] **Test Stats Display** - Open dropdown and verify you see "Today: X sessions • Xh Xm" and "Week: X sessions • Xh Xm" with sparkline. (Feb 1, 2026)
+- [ ] **Test About Dialog** - Click "About" in dropdown. Should show dialog explaining how to use the timer. (Feb 1, 2026)
+
 ### Previously Verified
 - [x] **Verify click-to-toggle** - Clicking the menu bar item should: start timer (when idle), pause (when running), resume (when paused). Idle state now shows "25:00" greyed out. (Feb 1, 2026)
 

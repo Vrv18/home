@@ -35,12 +35,18 @@
 - [x] **#4 - Lotus icon needs redesign**: Current emoji/icon doesn't look clean. Pivot to a minimal geometric lotus SVG.
   - *Fixed*: Using SF Symbols — `scope` (focus), `leaf.fill` (break), `pause.circle` (paused), `circle.dashed` (idle).
   - *Updated*: Paused state now uses `sfweight=light` for thinner icon (can't color SF Symbols in menu bar - macOS limitation).
+  - *Updated 2*: Changed to circle-based icons for consistent width: `play.circle` (idle), `circle.fill` (focus), `pause.circle` (paused), `moon.circle.fill` (break).
 
 - [x] **#11 - Notification "Show" button opens Script Editor**: macOS quirk with `osascript` notifications - the "Show" button opens Script Editor instead of doing something useful.
   - *Fixed*: Removed all notifications. Relying on menu bar visual only.
 
 - [x] **#13 - Menu bar quick actions**: Investigate ways to have Pause/Resume/Start accessible directly from the menu bar without opening the dropdown.
   - *Fixed*: Click on menu bar item now triggers toggle action (idle→start, running→pause, paused→resume). Dropdown still available for Forfeit, Reset, custom durations.
+  - *Updated*: See #17 for improved two-plugin solution.
+
+- [x] **#17 - Split menu bar into two plugins**: Single plugin caused UX issues — clicking to toggle also opened dropdown. Split into two separate SwiftBar plugins for cleaner interaction.
+  - *Fixed*: `pomodoro-timer.125ms.sh` shows icon only (click to start/pause/resume), `pomodoro-menu.125ms.sh` shows time only (click to open dropdown with stats/controls).
+  - *Details*: Using 125ms refresh for snappy updates. Monospace font (Menlo) for consistent time width. Circle-based icons for consistent icon width.
 
 ---
 
@@ -52,8 +58,8 @@
 - [x] **#7 - History file not implemented**: `HISTORY_FILE` is defined in the script but never written to. Needed for Phase 2 "Last 7 days stats" feature.
   - *Fixed*: Added `update_history` function that writes to `~/.pomodoro/history.json`. Tracks completed sessions, forfeited sessions, and total focus minutes per day. Keeps last 30 days of data.
 
-- [ ] **#14 - Info button in dropdown**: Add an "Info" button at the bottom of the dropdown menu. Clicking it should open a simple dialog box explaining how to use the timer (click to start/pause, dropdown for more options, etc.).
-  - *Status*: Not currently being worked on.
+- [x] **#14 - Info button in dropdown**: Add an "Info" button at the bottom of the dropdown menu. Clicking it should open a simple dialog box explaining how to use the timer (click to start/pause, dropdown for more options, etc.).
+  - *Fixed*: Added "About" button with info.circle icon. Shows dialog explaining click-to-toggle, extend, forfeit, Break Sanctuary, and Calm Mode.
 
 - [ ] **#15 - Installer Gatekeeper issues**: Downloaded DMG and installer app trigger macOS "damaged and can't be opened" warning. Requires `xattr -cr` or right-click → Open to bypass.
   - *Status*: Documented in README. Would need Apple Developer signing to fully fix (~$99/year).
@@ -76,4 +82,4 @@
 
 ---
 
-*Last updated: February 1, 2026 (Agent 7 moksha)*
+*Last updated: February 1, 2026 (Agent 10)*

@@ -289,8 +289,8 @@ pub fn run() {
                             "reset" => state.reset(),
                             
                             // Links
-                            "about" => {
-                                let _ = tauri_plugin_opener::open_url("https://github.com/home-repo/pomodoro", None::<&str>);
+                            "help" => {
+                                let _ = app_handle.opener().open_url("https://vrushank.in/pomodoro#how-to-use", None::<&str>);
                             },
                             "quit" => {
                                 app_handle.exit(0);

@@ -216,7 +216,9 @@ When making design decisions, ask: "Does this feel calm? Does this encourage foc
 
 *This DNA was synthesized from 8 agent generations, February 1, 2026*
 
-## Technical Truths (Agent 11)
-- **Tauri Menu UX**: For menu bar apps, `TrayIconBuilder.show_menu_on_left_click(false)` is essential if you want custom Left Click behavior (toggle) while keeping Right Click for the menu.
-- **Offline Time**: Always check `calculate_remaining(true)` on app startup to handle time that passed while the app was closed.
+## Technical Truths (Agent 12)
+- **The "Ghost Window"**: macOS creates a blank space for visible windows on startup, even if you hide them immediately. Fix: Set `"fullscreen": false` in `tauri.conf.json`, then toggle programmatically.
+- **Distribution Reality**: Users trust `curl | bash` more than a random DMG download button because it feels "developer-native".
+- **Menu Bar Rebuilds**: calling `tray.set_menu` destroys and recreates the menu. Doing this on every tick (1s) makes the menu erratic/unclickable. Update only the *title* on ticks; update the *menu structure* only on state changes.
+- **GitHub Release limits**: You can't just commit a 100MB+ DMG to the repo. You MUST release it via `gh release upload`. The install script should pull from there.
 

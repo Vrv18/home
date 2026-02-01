@@ -89,9 +89,25 @@ Click Install to continue." buttons {"Cancel", "Install"} default button "Instal
 			end if
 		end if
 		
-		-- Set SwiftBar preferences to use our plugin folder
+		-- Kill any existing SwiftBar instance and clear preferences for clean install
+		showProgress("Preparing SwiftBar...")
+		try
+			do shell script "pkill -x SwiftBar"
+			delay 1
+		end try
+		
+		-- Clear old SwiftBar preferences to prevent conflicts
+		try
+			do shell script "defaults delete com.ameba.SwiftBar"
+		end try
+		try
+			do shell script "killall cfprefsd"
+			delay 0.5
+		end try
+		
+		-- Set SwiftBar preferences to use our plugin folder (BEFORE launching)
 		showProgress("Configuring SwiftBar...")
-		do shell script "defaults write com.ameba.SwiftBar PluginDirectory " & quoted form of pluginFolder
+		do shell script "defaults write com.ameba.SwiftBar PluginDirectory -string " & quoted form of pluginFolder
 		
 		-- Create the pomodoro state directory
 		do shell script "mkdir -p ~/.pomodoro"
@@ -106,19 +122,17 @@ Click Install to continue." buttons {"Cancel", "Install"} default button "Instal
 				do shell script "rm -rf " & quoted form of breakAppDest
 			end try
 			do shell script "cp -R " & quoted form of breakAppSource & " " & quoted form of breakAppDest
+			-- Remove quarantine from Break Sanctuary app
+			try
+				do shell script "xattr -cr " & quoted form of breakAppDest
+			end try
 		end if
 		
 		-- Launch SwiftBar
 		showProgress("Launching Pomodoro Timer...")
 		delay 0.5
 		
-		-- Kill any existing SwiftBar instance
-		try
-			do shell script "pkill -x SwiftBar"
-			delay 1
-		end try
-		
-		-- Launch SwiftBar
+		-- Launch SwiftBar (preferences are already set)
 		do shell script "open -a SwiftBar"
 		
 		-- Success!

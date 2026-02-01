@@ -62,15 +62,23 @@ Pomodoro Timer
 
 Double-click "Install Pomodoro" to install.
 
+⚠️  IMPORTANT - First Launch:
+If you see "Install Pomodoro is damaged", this is macOS blocking unsigned apps.
+Fix: Right-click the app → Click "Open" → Click "Open" again in the dialog.
+
 The installer will:
 1. Download SwiftBar (if not already installed)
-2. Set up the Pomodoro timer plugin
+2. Set up the Pomodoro timer plugin + Break Sanctuary
 3. Launch the timer in your menu bar
 
 After installation, click the timer icon in your menu bar to start a focus session!
 
 ---
 Troubleshooting:
+
+If you see "damaged and can't be opened":
+- Right-click "Install Pomodoro" → Click "Open"
+- Or run in Terminal: xattr -cr /Volumes/Pomodoro\ Timer/Install\ Pomodoro.app
 
 If you don't see the timer:
 - Open SwiftBar from Applications

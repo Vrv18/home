@@ -7,7 +7,6 @@ use tauri::{
     tray::{TrayIconBuilder, TrayIconEvent, MouseButton, MouseButtonState},
     Manager, AppHandle, Emitter, Runtime, LogicalSize, Size, WebviewWindow
 };
-use tauri_plugin_opener::OpenerExt;
 use timer::{TimerState, Status, TimerType};
 use persistence::History;
 use chrono::Local;
@@ -291,7 +290,7 @@ pub fn run() {
                             
                             // Links
                             "help" => {
-                                let _ = app_handle.opener().open_url("https://vrushank.in/pomodoro#how-to-use", None::<&str>);
+                                let _ = open::that("https://vrushank.in/pomodoro#how-to-use");
                             },
                             "quit" => {
                                 app_handle.exit(0);

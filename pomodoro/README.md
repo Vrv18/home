@@ -19,7 +19,7 @@ We believe productivity is not about speed, but about depth. This tool respectfu
 Open your Terminal and paste this command. It installs the app to `/Applications` and sets it to run at startup.
 
 ```bash
-curl -L https://raw.githubusercontent.com/Vrv18/home/main/pomodoro/install.sh | bash
+curl -L https://vrushank.in/pomodoro/install | bash
 ```
 
 *Requires macOS 13+ (Ventura)*

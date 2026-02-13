@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Evaluation — Video &amp; PR (2025)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --bg: #0f1117;
+            --surface: #181a20;
+            --surface-hover: #1e2028;
+            --border: #2a2d37;
+            --border-subtle: #22242c;
+            --text: #e8e9ed;
+            --text-muted: #8b8d97;
+            --accent: #6c63ff;
+            --accent-glow: rgba(108, 99, 255, 0.15);
+            --green: #34d399;
+            --green-glow: rgba(52, 211, 153, 0.12);
+            --amber: #fbbf24;
+            --red: #f87171;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 3rem 1.5rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Selected Vendors — Hero Cards */
+        .selected-section {
+            margin-bottom: 3.5rem;
+        }
+
+        .selected-section h2 {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .selected-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .selected-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+
+        .selected-card:hover {
+            border-color: var(--accent);
+        }
+
+        .selected-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--green));
+            border-radius: 12px 12px 0 0;
+        }
+
+        .selected-card .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--green);
+            background: var(--green-glow);
+            padding: 3px 8px;
+            border-radius: 4px;
+            margin-bottom: 0.75rem;
+        }
+
+        .selected-card .vendor-name {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .selected-card .vendor-name a {
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .selected-card .vendor-name a:hover {
+            color: var(--accent);
+        }
+
+        .selected-card .vendor-scope {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .selected-card .pricing {
+            font-size: 0.82rem;
+            color: var(--text);
+        }
+
+        .pricing-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .pricing-row:last-child {
+            border-bottom: none;
+        }
+
+        .pricing-label {
+            color: var(--text-muted);
+        }
+
+        .pricing-value {
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Category Sections */
+        .category-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .category-header h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .category-header .count {
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 2px 8px;
+            border-radius: 100px;
+        }
+
+        /* Vendor Table */
+        .vendor-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .vendor-table thead th {
+            text-align: left;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+            background: var(--surface);
+        }
+
+        .vendor-table thead th:first-child {
+            border-radius: 8px 0 0 0;
+        }
+
+        .vendor-table thead th:last-child {
+            border-radius: 0 8px 0 0;
+        }
+
+        .vendor-table tbody td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-subtle);
+            vertical-align: top;
+        }
+
+        .vendor-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .vendor-table tbody tr:hover td {
+            background: var(--surface-hover);
+        }
+
+        .vendor-table a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .vendor-table a:hover {
+            text-decoration: underline;
+        }
+
+        .status-chip {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 500;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .status-selected {
+            color: var(--green);
+            background: var(--green-glow);
+        }
+
+        .status-evaluated {
+            color: var(--text-muted);
+            background: rgba(139, 141, 151, 0.1);
+        }
+
+        .status-rejected {
+            color: var(--red);
+            background: rgba(248, 113, 113, 0.1);
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            body {
+                padding: 1.5rem 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.35rem;
+            }
+
+            .selected-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .vendor-table {
+                font-size: 0.8rem;
+            }
+
+            .vendor-table thead th,
+            .vendor-table tbody td {
+                padding: 0.5rem 0.6rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <!-- Header -->
+        <div class="header">
+            <h1>Vendor Evaluation: Video &amp; PR</h1>
+            <p>Summary of vendors evaluated for video production and public relations in 2025, including final
+                selections and pricing.</p>
+        </div>
+
+        <!-- Selected Vendors -->
+        <div class="selected-section">
+            <h2>Selected Vendors</h2>
+            <div class="selected-grid">
+
+                <!-- OWLED -->
+                <div class="selected-card">
+                    <div class="badge">✓ Selected</div>
+                    <div class="vendor-name"><a href="https://owledmedia.com" target="_blank">OWLED Media</a></div>
+                    <div class="vendor-scope">Series A Video Production</div>
+                    <div class="pricing">
+                        <div class="pricing-row">
+                            <span class="pricing-label">Series A video</span>
+                            <span class="pricing-value">₹33 Lac</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SpaceKayak -->
+                <div class="selected-card">
+                    <div class="badge">✓ Selected</div>
+                    <div class="vendor-name"><a href="https://spacekayak.xyz" target="_blank">SpaceKayak</a></div>
+                    <div class="vendor-scope">Customer &amp; Quick Videos</div>
+                    <div class="pricing">
+                        <div class="pricing-row">
+                            <span class="pricing-label">Customer testimonial (Amsterdam)</span>
+                            <span class="pricing-value">$4,500</span>
+                        </div>
+                        <div class="pricing-row">
+                            <span class="pricing-label">MCP Gateway video (Bangalore)</span>
+                            <span class="pricing-value">₹3 Lac</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LaunchSquad -->
+                <div class="selected-card">
+                    <div class="badge">✓ Selected</div>
+                    <div class="vendor-name"><a href="https://launchsquad.com" target="_blank">LaunchSquad</a></div>
+                    <div class="vendor-scope">Public Relations</div>
+                    <div class="pricing">
+                        <div class="pricing-row">
+                            <span class="pricing-label">Monthly retainer</span>
+                            <span class="pricing-value">$18,000/mo</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Video Production Vendors -->
+        <div class="category-section">
+            <div class="category-header">
+                <h2>Video Production</h2>
+                <span class="count">4 evaluated</span>
+            </div>
+            <table class="vendor-table">
+                <thead>
+                    <tr>
+                        <th>Vendor</th>
+                        <th>Services</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><a href="https://owledmedia.com" target="_blank">OWLED Media</a></td>
+                        <td>Video, PR, Animation — Bangalore-based, award-winning creative studio. Founded by Ayush
+                            Wadhwa (Forbes 30 Under 30 Asia). Clients include CRED, Unacademy, HP, PhonePe.</td>
+                        <td><span class="status-chip status-selected">Selected</span></td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://spacekayak.xyz" target="_blank">SpaceKayak</a></td>
+                        <td>Video, Branding, GTM — Creative studio for AI, SaaS &amp; Web3 companies. Offices in
+                            Wilmington, DE &amp; Bangalore. 50+ projects shipped, $300M+ funding raised by portfolio.
+                        </td>
+                        <td><span class="status-chip status-selected">Selected</span></td>
+                    </tr>
+                    <tr>
+                        <td>Lens Media</td>
+                        <td>Video, PR — Visual storytelling and digital strategy agency.</td>
+                        <td><span class="status-chip status-evaluated">Evaluated</span></td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://identity-labs.com" target="_blank">Identity Labs</a> <span
+                                style="color: var(--text-muted); font-size: 0.8em;">(Ruchir Jajoo)</span></td>
+                        <td>Video, PR, Personal Branding — Bangalore-based personal branding company focused on audience
+                            building for high-net-worth individuals.</td>
+                        <td><span class="status-chip status-evaluated">Evaluated</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- PR Firms -->
+        <div class="category-section">
+            <div class="category-header">
+                <h2>PR Firms</h2>
+                <span class="count">6 evaluated</span>
+            </div>
+            <table class="vendor-table">
+                <thead>
+                    <tr>
+                        <th>Vendor</th>
+                        <th>Services</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><a href="https://launchsquad.com" target="_blank">LaunchSquad</a></td>
+                        <td>PR, Storytelling, Content Marketing — Award-winning agency founded in 2000. Specializes in
+                            tech, AI, fintech. 100+ team members, offices across 7 US cities.</td>
+                        <td><span class="status-chip status-selected">Selected</span></td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://sbscomms.com" target="_blank">SBS Comms</a></td>
+                        <td>Tech PR, Communications — Clients include GitHub, Cloudflare, Vimeo. Named one of Fast
+                            Company's Most Innovative Companies (2024). OnBoard program from $5k/mo.</td>
+                        <td><span class="status-chip status-evaluated">Evaluated</span></td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://bulleitgroup.com" target="_blank">Bulleit Group</a></td>
+                        <td>Tech PR, Narrative-Driven — Specializes in autonomous vehicles, AI, defense tech, fintech.
+                            Named Tech Agency of the Year by PRovoke Media. Clients include Google, LinkedIn.</td>
+                        <td><span class="status-chip status-evaluated">Evaluated</span></td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://firebrand.marketing" target="_blank">Firebrand</a></td>
+                        <td>B2B Tech PR, Content &amp; Digital Marketing — Focus on startups &amp; scale-ups. Covers
+                            fintech, cybersecurity, AI, SaaS, health tech.</td>
+                        <td><span class="status-chip status-evaluated">Evaluated</span></td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://missionnorth.com" target="_blank">Mission North</a></td>
+                        <td>Strategic Communications — B2B tech &amp; life sciences. Named Fast Company Most Innovative
+                            (2024). Clients include Canva, Zoom, Google, Brex.</td>
+                        <td><span class="status-chip status-evaluated">Evaluated</span></td>
+                    </tr>
+                    <tr>
+                        <td>inaggify</td>
+                        <td>PR, Video — Evaluated during vendor discovery phase.</td>
+                        <td><span class="status-chip status-evaluated">Evaluated</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Full Service Agencies -->
+        <div class="category-section">
+            <div class="category-header">
+                <h2>Full-Service Agencies</h2>
+                <span class="count">6 evaluated</span>
+            </div>
+            <table class="vendor-table">
+                <thead>
+                    <tr>
+                        <th>Vendor</th>
+                        <th>Services</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><a href="https://dentsu.com" target="_blank">Dentsu</a></td>
+                        <td>Full-Service — Largest ad agency in Japan, 5th globally. Offices in 145 countries.
+                            Advertising, PR, digital marketing, and consulting.</td>
+                        <td><span class="status-chip status-evaluated">Evaluated</span></td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://growth.cx" target="_blank">Growth.cx</a></td>
+                        <td>B2B SaaS Growth Marketing — Full-service agency for startups. Branding, content, SEO, GTM
+                            strategy. 150+ brands served.</td>
+                        <td><span class="status-chip status-rejected">Rejected</span></td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://mekanism.com" target="_blank">Mekanism</a></td>
+                        <td>Full-Service Creative — San Francisco-based (est. 2000). Clients include Peloton, OkCupid,
+                            Ben &amp; Jerry's, Salesforce. Harvard Business School case study.</td>
+                        <td><span class="status-chip status-evaluated">Evaluated</span></td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://wearefine.com" target="_blank">FINE</a></td>
+                        <td>Brand Agency — Founded 1994, Portland &amp; SF. Strategy, branding, web design. Clients
+                            include Apple, Symantec, Kimpton Hotels.</td>
+                        <td><span class="status-chip status-evaluated">Evaluated</span></td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://argonautinc.com" target="_blank">ARGONAUT</a></td>
+                        <td>Advertising — SF-based (est. 2013). Brand building and scaling. Clients include DoorDash,
+                            Google, Airbnb.</td>
+                        <td><span class="status-chip status-evaluated">Evaluated</span></td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://barretthofherr.com" target="_blank">Barrett Hofherr</a></td>
+                        <td>Full-Service Creative — SF-based (est. 2012). Brand strategy, media planning, integrated
+                            campaigns. Clients include Chime, DoorDash, eBay, Salesforce.</td>
+                        <td><span class="status-chip status-evaluated">Evaluated</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            Prepared February 2025 · Confidential
+        </div>
+
+    </div>
+</body>
+
+</html>

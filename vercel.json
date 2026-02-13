@@ -11,6 +11,10 @@
     {
       "source": "/pomodoro/install",
       "destination": "/pomodoro/install.sh"
-    }
+    },
+    {
+      "source": "/vendors",
+      "destination": "/vendors/index.html"
+    }    
   ]
 }

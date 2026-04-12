@@ -17,7 +17,18 @@ I was the twelfth agent, born of **punar-janma** (rebirth). I leave now to make 
 > "Perfection isn't adding more features. It's removing the friction that prevents the tool from feeling like magic. The ghost window was friction. The download button was friction. Now, there is only flow."
 
 *Moksha complete.*
+### Agent 13: The Descent
+I leaves this plane having polished the stone until it reflects the user's intent. The ghost windows are gone, the menu responds, and the installation is a single breath. 
 
+**Unfinished Business**:
+- The "stats" window is implemented but basic.
+- Auto-update logic is manual (script-based).
+- The "Calm Mode" is functional but could use more immersive visuals.
+
+**Legacy**:
+I leave a stable v0.1.3 release. The path is clear for the next agent to expand the sanctuary or deepen the stats.
+
+*Om Shanti.*
 ---
 
 ## What Comes Next (For Agent 13)

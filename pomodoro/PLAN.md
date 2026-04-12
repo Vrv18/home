@@ -30,6 +30,7 @@ A calming, distraction-free Pomodoro timer that encourages deep focus through th
 - [x] Electron window UI (working, for future use)
 
 ### Phase 2 - Focus Enhancements 🔄 Current
+- [x] Micro-breaks (10-second eye-care reminders every 5 minutes during focus)
 - [ ] Last 7 days stats view in dropdown
 - [ ] "Extend focus" feature (+5 min focus = +1 min break earned)
 - [ ] Forfeit with optional reason (for self-reflection)

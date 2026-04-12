@@ -10,6 +10,9 @@
   - *Fixed*: Set `"fullscreen": false` in `tauri.conf.json` and managed fullscreen transitions programmatically.
 - [x] **Menu Bar Logic**: Previous issues with menu rebuilding causing closures.
   - *Fixed*: Split `update_tray_title` (tick) from `update_tray_menu` (state change).
+- [x] **Distribution**: Release v0.1.0/0.1.3 verified. `curl | bash` works.
+- [x] **Documentation**: Website and README updated. "How to Use" link fixed (v0.1.3).
+- [x] **Verification**: Menu interactions, Help link, and Installer all verified.
 - [x] **Performance**: ~10MB RAM, <1% CPU.
   - *Verified*: Native implementation eliminates all previous Python/Electron overhead.
 

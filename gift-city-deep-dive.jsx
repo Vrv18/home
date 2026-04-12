@@ -1,0 +1,393 @@
+import { useState, useMemo } from "react";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, LineChart, Line, CartesianGrid, PieChart, Pie } from "recharts";
+
+const fL = (n) => { if (n >= 10000000) return `₹${(n/10000000).toFixed(2)} Cr`; if (n >= 100000) return `₹${(n/100000).toFixed(1)} L`; return `₹${Math.round(n).toLocaleString("en-IN")}`; };
+const fF = (n) => `₹${Math.round(n).toLocaleString("en-IN")}`;
+
+const C = { terra: "#c97a3a", navy: "#1a1a2e", sage: "#81b29a", coral: "#e07a5f", gold: "#f2cc8f", plum: "#6d6875", sky: "#4a90d9" };
+
+const PROJECTS = [
+  { name: "Sobha Dream Heights", config: "1-2 BHK", price: "₹90L – ₹1.45 Cr", sqft: "770-1141", rate: "₹11,700-12,700/sqft", status: "Ready", rera: "RAA05158", builder: "Sobha Ltd", tier: "A" },
+  { name: "Sobha Avalon", config: "1-3 BHK", price: "₹1.25 – ₹3.1 Cr", sqft: "405-1005 (carpet)", rate: "₹10,500-12,000/sqft", status: "UC (Mar 2027)", rera: "RAA09000", builder: "Sobha Ltd", tier: "A" },
+  { name: "Sobha Elysia", config: "3-4 BHK", price: "₹2.54 – ₹4.97 Cr", sqft: "1226-2045 (carpet)", rate: "₹12,000-14,000/sqft", status: "UC (Dec 2028)", rera: "RAA13206", builder: "Sobha Ltd", tier: "A+" },
+  { name: "Shilp North Sky", config: "2-4 BHK", price: "₹1.22 – ₹4.34 Cr", sqft: "1325-4717", rate: "₹9,200-11,000/sqft", status: "UC (Mar 2028)", rera: "MAA11559", builder: "Shilp Infra", tier: "A" },
+  { name: "Bakeri Stella", config: "1-4 BHK", price: "₹80L – ₹4.25 Cr", sqft: "474-2498", rate: "₹8,500-10,000/sqft", status: "UC (Mar 2028)", rera: "MAA11928", builder: "Bakeri Group", tier: "A-" },
+  { name: "Shivalik Skyview", config: "2-3 BHK", price: "₹1.41 – ₹2.5 Cr", sqft: "879-1469 (carpet)", rate: "₹9,000-10,500/sqft", status: "UC (Feb 2028)", rera: "RAA11515", builder: "Shivalik", tier: "B+" },
+  { name: "Savvy Marina", config: "2-3 BHK", price: "₹1.51 – ₹2.93 Cr", sqft: "892-1263 (carpet)", rate: "₹10,000-11,500/sqft", status: "UC", rera: "MAA11100", builder: "Savvy", tier: "B+" },
+  { name: "Reva by Kaavyaratna", config: "2-4 BHK", price: "₹1.34 – ₹4.13 Cr", sqft: "1177-3641 (super)", rate: "₹8,500-10,000/sqft", status: "UC", rera: "MN140AA10040", builder: "Kaavyaratna", tier: "B" },
+];
+
+const Tip = ({ active, payload }) => {
+  if (!active || !payload?.length) return null;
+  return (<div style={{ background: C.navy, padding: "8px 12px", borderRadius: 8, boxShadow: "0 4px 16px rgba(0,0,0,0.3)" }}>
+    {payload.map((p, i) => (<div key={i} style={{ color: p.color || "#fff", fontSize: 11, fontFamily: "'DM Sans', sans-serif" }}>{p.name}: {typeof p.value === "number" ? (p.value > 10000 ? fL(p.value) : p.value) : p.value}</div>))}
+  </div>);
+};
+
+export default function App() {
+  const [path, setPath] = useState("solo");
+  const [view, setView] = useState("strategy");
+
+  // Solo: 2.5 Cr
+  const solo = {
+    budget: 25000000,
+    down: 10000000, // 50L cash + 20L gold + 30L father
+    loan: 15000000,
+    rate: 9, tenure: 10,
+  };
+  const sr = solo.rate/12/100, sn = solo.tenure*12;
+  const soloEmi = solo.loan * sr * Math.pow(1+sr,sn) / (Math.pow(1+sr,sn)-1);
+  const soloInterest = soloEmi * sn - solo.loan;
+
+  // Group: 6.5 Cr (avg), 4 friends
+  const group = {
+    budget: 65000000,
+    members: 4,
+    perPerson: 16250000,
+    downPerPerson: 4062500, // ~25% each
+    totalDown: 16250000,
+    loan: 48750000,
+    rate: 9.5, tenure: 12,
+  };
+  const gr = group.rate/12/100, gn = group.tenure*12;
+  const groupEmi = group.loan * gr * Math.pow(1+gr,gn) / (Math.pow(1+gr,gn)-1);
+  const groupEmiPP = groupEmi / group.members;
+
+  // Projection
+  const projData = useMemo(() => {
+    const d = [];
+    for (let y = 0; y <= 10; y++) {
+      const sRes = Math.round(25000000 * Math.pow(1.12, y));
+      const sComm = Math.round(25000000 * Math.pow(1.10, y));
+      const gMixed = Math.round(65000000 * Math.pow(1.11, y));
+      d.push({ year: y, soloRes: sRes, soloComm: sComm, groupMixed: gMixed });
+    }
+    return d;
+  }, []);
+
+  return (
+    <div style={{ minHeight: "100vh", background: "#faf9f6", fontFamily: "'DM Sans', sans-serif" }}>
+      <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet" />
+
+      {/* Header */}
+      <div style={{ background: "linear-gradient(135deg, #0a0a1e 0%, #1a1a3e 60%, #2a1a2e 100%)", padding: "28px 20px 22px", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", top: -40, right: -20, width: 160, height: 160, borderRadius: "50%", background: "rgba(201,122,58,0.06)" }} />
+        <div style={{ fontSize: 10, color: C.terra, textTransform: "uppercase", letterSpacing: "0.2em", fontWeight: 600 }}>GIFT City Deep Dive</div>
+        <h1 style={{ color: "#fff", fontSize: 22, fontFamily: "'Playfair Display', serif", fontWeight: 700, margin: "4px 0 0" }}>India's Only Smart City IFSC</h1>
+        <p style={{ color: "rgba(255,255,255,0.35)", fontSize: 11, marginTop: 6, lineHeight: 1.5 }}>886 acres · ₹8.5-12.8K/sqft · 61.5% appreciation in 3 yrs · 4-6% residential yield</p>
+
+        {/* Pathway toggle */}
+        <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
+          {[["solo", "Solo · ₹2.5 Cr"], ["group", "Friends · ₹6.5 Cr"]].map(([k, l]) => (
+            <button key={k} onClick={() => setPath(k)} style={{
+              padding: "8px 16px", borderRadius: 20, border: path === k ? "1.5px solid " + C.terra : "1px solid rgba(255,255,255,0.15)",
+              background: path === k ? `${C.terra}20` : "transparent", color: path === k ? C.terra : "rgba(255,255,255,0.5)",
+              fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "'DM Sans', sans-serif",
+            }}>{l}</button>
+          ))}
+        </div>
+      </div>
+
+      {/* Tabs */}
+      <div style={{ display: "flex", gap: 4, padding: "12px 16px 0", overflowX: "auto" }}>
+        {[["strategy", "Strategy"], ["projects", "Projects"], ["numbers", "Numbers"], ["risks", "Playbook"]].map(([k, l]) => (
+          <button key={k} onClick={() => setView(k)} style={{
+            padding: "8px 14px", border: "none", cursor: "pointer", borderRadius: 8,
+            background: view === k ? C.navy : "transparent", color: view === k ? "#fff" : "#888",
+            fontFamily: "'DM Sans', sans-serif", fontSize: 12, fontWeight: 600, whiteSpace: "nowrap",
+          }}>{l}</button>
+        ))}
+      </div>
+
+      <div style={{ padding: "12px 16px 40px", maxWidth: 640, margin: "0 auto" }}>
+
+        {/* STRATEGY TAB */}
+        {view === "strategy" && (
+          <>
+            {/* Funding breakdown */}
+            <div style={{ background: "#fff", borderRadius: 14, padding: 22, marginBottom: 12, border: "1px solid #eee" }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: C.navy, marginBottom: 14 }}>
+                {path === "solo" ? "Solo Pathway — ₹2.5 Cr" : "Group Pathway — ₹6.5 Cr (4 friends)"}
+              </div>
+
+              {path === "solo" ? (
+                <>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
+                    {[
+                      ["Down Payment", fL(solo.down), "₹50L cash + ₹20L gold + ₹30L father"],
+                      ["Loan", fL(solo.loan), `@ ${solo.rate}% for ${solo.tenure} yrs`],
+                      ["Monthly EMI", fF(soloEmi), "For 120 months"],
+                      ["Total Interest", fL(soloInterest), "Cost of borrowing"],
+                    ].map(([t, v, s], i) => (
+                      <div key={i}><div style={{ fontSize: 10, color: "#bbb", textTransform: "uppercase" }}>{t}</div><div style={{ fontSize: 15, fontWeight: 700, color: C.navy, fontFamily: "'Playfair Display', serif" }}>{v}</div><div style={{ fontSize: 10, color: "#aaa" }}>{s}</div></div>
+                    ))}
+                  </div>
+
+                  <div style={{ fontSize: 13, fontWeight: 700, color: C.navy, marginBottom: 10 }}>Recommended Split</div>
+                  <div style={{ background: C.navy, borderRadius: 12, padding: 18 }}>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: "#fff", fontFamily: "'Playfair Display', serif" }}>Option A: One Premium 3BHK</div>
+                    <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", marginTop: 6, lineHeight: 1.7 }}>
+                      Buy a single 3BHK in Sobha Elysia or Shilp North Sky (₹2.5-3 Cr range). Self-use potential + highest per-unit appreciation. Rent at ₹35-45K/month (4-5% yield on carpet area basis).
+                    </div>
+                  </div>
+                  <div style={{ background: "#f8f7f4", borderRadius: 12, padding: 18, marginTop: 10 }}>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: C.navy, fontFamily: "'Playfair Display', serif" }}>Option B: Two Smaller Units</div>
+                    <div style={{ fontSize: 12, color: "#666", marginTop: 6, lineHeight: 1.7 }}>
+                      Buy 2× 1BHK or 1× 2BHK + 1× 1BHK in Sobha Avalon or Bakeri Stella (₹90L + ₹1.45 Cr). Higher rental yield (5-6% on smaller units) + diversification across projects. Combined rent: ₹40-55K/month.
+                    </div>
+                  </div>
+                  <div style={{ fontSize: 11, color: C.sage, marginTop: 12, padding: "10px 14px", background: `${C.sage}10`, borderRadius: 8, lineHeight: 1.6 }}>
+                    💡 <strong>My lean:</strong> Option B. Smaller units in GIFT City rent faster (IFSC professionals = mostly singles/couples), yield better, and you can stagger exit timing.
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
+                    {[
+                      ["Total Pool", "₹6.5 Cr", "4 friends × ~₹1.6 Cr each"],
+                      ["Down (25%)", fL(group.totalDown), `₹${(group.downPerPerson/100000).toFixed(0)}L per person`],
+                      ["Group Loan", fL(group.loan), `@ ${group.rate}% for ${group.tenure} yrs`],
+                      ["EMI per person", fF(groupEmiPP), `Total EMI: ${fF(groupEmi)}`],
+                    ].map(([t, v, s], i) => (
+                      <div key={i}><div style={{ fontSize: 10, color: "#bbb", textTransform: "uppercase" }}>{t}</div><div style={{ fontSize: 15, fontWeight: 700, color: C.navy, fontFamily: "'Playfair Display', serif" }}>{v}</div><div style={{ fontSize: 10, color: "#aaa" }}>{s}</div></div>
+                    ))}
+                  </div>
+
+                  <div style={{ fontSize: 13, fontWeight: 700, color: C.navy, marginBottom: 10 }}>Group Investment Strategies</div>
+
+                  <div style={{ background: C.navy, borderRadius: 12, padding: 18 }}>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: "#fff", fontFamily: "'Playfair Display', serif" }}>Strategy 1: Multi-Unit Residential</div>
+                    <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", marginTop: 6, lineHeight: 1.7 }}>
+                      Buy 4-5 apartments across 2-3 projects (Sobha Avalon + Shilp North Sky + Bakeri Stella). Each friend "owns" 1-2 units. Independent titles, clean exit. Combined rent: ₹1.5-2L/month. Appreciation: 10-15%/yr.
+                    </div>
+                    <div style={{ marginTop: 8, fontSize: 11, color: C.terra }}>⭐ Cleanest legal structure — each person holds separate title</div>
+                  </div>
+
+                  <div style={{ background: "#f8f7f4", borderRadius: 12, padding: 18, marginTop: 10 }}>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: C.navy, fontFamily: "'Playfair Display', serif" }}>Strategy 2: Residential + Commercial Split</div>
+                    <div style={{ fontSize: 12, color: "#666", marginTop: 6, lineHeight: 1.7 }}>
+                      ₹4 Cr → 3 residential units (rent ₹1L/mo, 4-5% yield). ₹2.5 Cr → 1 commercial office (1500-2000 sqft in Shilp Centrica or IFSC tower). Rent: ₹1.5-2L/mo at 8-11% yield. Total monthly: ₹2.5-3L/mo.
+                    </div>
+                    <div style={{ marginTop: 8, fontSize: 11, color: C.sage }}>💰 Highest yield — but commercial needs SEZ-registered tenant</div>
+                  </div>
+
+                  <div style={{ background: "#fef9f0", borderRadius: 12, padding: 18, marginTop: 10 }}>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: C.navy, fontFamily: "'Playfair Display', serif" }}>Strategy 3: LLP / Joint Investment Vehicle</div>
+                    <div style={{ fontSize: 12, color: "#666", marginTop: 6, lineHeight: 1.7 }}>
+                      Form an LLP, pool ₹6.5 Cr, buy commercial office floor or multiple premium residential. Professional management, shared legal costs, structured exit via share transfer (no stamp duty on LLP partner change). Clean profit split.
+                    </div>
+                    <div style={{ marginTop: 8, fontSize: 11, color: C.plum }}>⚙️ Most sophisticated — needs CA + lawyer setup, ~₹50-80K cost</div>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Why GIFT City */}
+            <div style={{ background: "#fff", borderRadius: 14, padding: 22, border: "1px solid #eee" }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: C.navy, marginBottom: 12 }}>Why GIFT City Specifically</div>
+              {[
+                ["India's only IFSC", "Regulated by IFSCA (not SEBI/RBI) — positioned as India's Singapore/Dubai equivalent", C.terra],
+                ["61.5% appreciation in 3 years", "Flat rates moved from ₹6,500 to ₹10,500/sqft avg. Still room vs Mumbai/BLR", C.sage],
+                ["Policy moat till 2030", "Budget 2025 extended all IFSC tax benefits to March 2030 — 4 years of policy certainty", C.gold],
+                ["4-6% residential yield", "Higher than Mumbai (2-3%) or Bangalore (2.5-3.5%). IFSC professionals pay premium rent", C.sky],
+                ["Commercial: 8-11% yield", "Grade-A office to IFSC-registered tenants on 5-10 year leases", C.coral],
+                ["Gujarat home base", "You know the market, have family in Ahmedabad — information + execution advantage", C.plum],
+              ].map(([t, d, c], i) => (
+                <div key={i} style={{ padding: "10px 0", borderBottom: i < 5 ? "1px solid #f5f5f5" : "none" }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: c }}>{t}</div>
+                  <div style={{ fontSize: 11, color: "#888", marginTop: 3, lineHeight: 1.5 }}>{d}</div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* PROJECTS TAB */}
+        {view === "projects" && (
+          <>
+            <div style={{ fontSize: 11, color: "#999", marginBottom: 12, lineHeight: 1.5 }}>
+              All RERA-registered. Sorted by builder tier. Tap any card for details.
+            </div>
+            {PROJECTS.map((p, i) => (
+              <div key={i} style={{ background: "#fff", borderRadius: 12, padding: "16px 18px", marginBottom: 8, border: "1px solid #eee" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: C.navy }}>{p.name}</div>
+                    <div style={{ fontSize: 11, color: "#999", marginTop: 2 }}>{p.builder} · Tier {p.tier}</div>
+                  </div>
+                  <div style={{ padding: "3px 8px", borderRadius: 6, background: p.status === "Ready" ? `${C.sage}20` : `${C.gold}20`, fontSize: 10, fontWeight: 600, color: p.status === "Ready" ? C.sage : C.terra }}>{p.status}</div>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 12 }}>
+                  <div><div style={{ fontSize: 9, color: "#bbb" }}>CONFIG</div><div style={{ fontSize: 12, fontWeight: 600, color: C.navy }}>{p.config}</div></div>
+                  <div><div style={{ fontSize: 9, color: "#bbb" }}>PRICE</div><div style={{ fontSize: 12, fontWeight: 600, color: C.terra }}>{p.price}</div></div>
+                  <div><div style={{ fontSize: 9, color: "#bbb" }}>RATE</div><div style={{ fontSize: 12, fontWeight: 600, color: C.navy }}>{p.rate}</div></div>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8, fontSize: 10, color: "#bbb" }}>
+                  <span>Area: {p.sqft} sqft</span>
+                  <span>RERA: {p.rera}</span>
+                </div>
+              </div>
+            ))}
+
+            {/* Shortlist */}
+            <div style={{ background: `linear-gradient(135deg, ${C.navy}, #2d2d4e)`, borderRadius: 14, padding: 22, marginTop: 6 }}>
+              <div style={{ fontSize: 11, color: C.terra, textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 600 }}>
+                {path === "solo" ? "Solo Shortlist" : "Group Shortlist"}
+              </div>
+              {path === "solo" ? (
+                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.6)", marginTop: 8, lineHeight: 1.8 }}>
+                  <strong style={{ color: "#fff" }}>Best value:</strong> 2× Bakeri Stella 1BHK (₹80L each) = ₹1.6 Cr + stamp/reg<br/>
+                  <strong style={{ color: "#fff" }}>Best brand:</strong> 1× Sobha Avalon 2BHK (₹1.45 Cr) + 1× Sobha Dream Heights 1BHK (₹90L)<br/>
+                  <strong style={{ color: "#fff" }}>Premium play:</strong> 1× Shilp North Sky 3BHK (₹2.2-2.5 Cr) — largest unit, best views
+                </div>
+              ) : (
+                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.6)", marginTop: 8, lineHeight: 1.8 }}>
+                  <strong style={{ color: "#fff" }}>Multi-unit:</strong> 2× Sobha Avalon 2BHK + 2× Bakeri Stella 2BHK = ~₹5.5 Cr + commercial unit ₹1 Cr<br/>
+                  <strong style={{ color: "#fff" }}>Premium:</strong> 2× Sobha Elysia 3BHK (₹2.5 Cr each) + 1× Shilp North Sky 2BHK (₹1.3 Cr)<br/>
+                  <strong style={{ color: "#fff" }}>Yield-max:</strong> 4× Sobha Dream Heights 1-2BHK + 1 commercial office (Shilp Centrica)
+                </div>
+              )}
+            </div>
+          </>
+        )}
+
+        {/* NUMBERS TAB */}
+        {view === "numbers" && (
+          <>
+            {/* 10 year projection */}
+            <div style={{ background: "#fff", borderRadius: 14, padding: 22, marginBottom: 12, border: "1px solid #eee" }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: C.navy, marginBottom: 4 }}>10-Year Value Projection</div>
+              <div style={{ fontSize: 11, color: "#999", marginBottom: 16 }}>Residential @ 12%/yr, Commercial @ 10%/yr, Group mixed @ 11%/yr</div>
+              <ResponsiveContainer width="100%" height={220}>
+                <LineChart data={projData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis dataKey="year" fontSize={10} tick={{ fill: "#aaa" }} />
+                  <YAxis fontSize={10} tick={{ fill: "#aaa" }} tickFormatter={v => fL(v)} width={55} />
+                  <Tooltip content={<Tip />} />
+                  <Line type="monotone" dataKey="soloRes" stroke={C.coral} strokeWidth={2} dot={false} name="Solo Residential" />
+                  <Line type="monotone" dataKey="soloComm" stroke={C.gold} strokeWidth={2} dot={false} name="Solo Commercial" strokeDasharray="6 3" />
+                  <Line type="monotone" dataKey="groupMixed" stroke={C.sage} strokeWidth={2.5} dot={false} name="Group Mixed" />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* Rental income comparison */}
+            <div style={{ background: "#fff", borderRadius: 14, padding: 22, marginBottom: 12, border: "1px solid #eee" }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: C.navy, marginBottom: 14 }}>Monthly Cash Flow Scenarios</div>
+              {(path === "solo" ? [
+                { label: "1× Premium 3BHK", rent: 40000, emi: soloEmi, maint: 5000 },
+                { label: "2× Smaller units", rent: 55000, emi: soloEmi, maint: 8000 },
+                { label: "1× Res + 1× Commercial (if stretch)", rent: 85000, emi: soloEmi + 20000, maint: 10000 },
+              ] : [
+                { label: "4× Residential units", rent: 150000, emi: groupEmi, maint: 20000 },
+                { label: "3× Res + 1× Commercial", rent: 250000, emi: groupEmi, maint: 25000 },
+                { label: "5× Res (premium mix)", rent: 200000, emi: groupEmi, maint: 30000 },
+              ]).map((s, i) => {
+                const net = s.rent - s.emi - s.maint;
+                const emiPP = path === "group" ? s.emi / 4 : s.emi;
+                const rentPP = path === "group" ? s.rent / 4 : s.rent;
+                const netPP = path === "group" ? net / 4 : net;
+                return (
+                  <div key={i} style={{ padding: "14px 0", borderBottom: i < 2 ? "1px solid #f5f5f5" : "none" }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: C.navy, marginBottom: 8 }}>{s.label}</div>
+                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                      <div style={{ flex: 1, background: `${C.sage}10`, borderRadius: 8, padding: "8px 12px" }}>
+                        <div style={{ fontSize: 9, color: "#999" }}>{path === "group" ? "RENT (YOUR SHARE)" : "RENT"}</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: C.sage }}>{fF(rentPP)}</div>
+                      </div>
+                      <div style={{ flex: 1, background: `${C.coral}10`, borderRadius: 8, padding: "8px 12px" }}>
+                        <div style={{ fontSize: 9, color: "#999" }}>{path === "group" ? "EMI (YOUR SHARE)" : "EMI"}</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: C.coral }}>{fF(emiPP)}</div>
+                      </div>
+                      <div style={{ flex: 1, background: netPP >= 0 ? `${C.sage}10` : `${C.coral}10`, borderRadius: 8, padding: "8px 12px" }}>
+                        <div style={{ fontSize: 9, color: "#999" }}>NET/MONTH</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: netPP >= 0 ? C.sage : C.coral }}>{fF(netPP)}</div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Year 5 & 10 exit */}
+            <div style={{ background: `linear-gradient(135deg, ${C.navy}, #2a2a4e)`, borderRadius: 14, padding: 22 }}>
+              <div style={{ fontSize: 11, color: C.terra, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600 }}>Exit Scenarios @ 12% Appreciation</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginTop: 14 }}>
+                {[
+                  ["Year 5 Value", fL((path === "solo" ? 25000000 : 65000000) * Math.pow(1.12, 5))],
+                  ["Year 10 Value", fL((path === "solo" ? 25000000 : 65000000) * Math.pow(1.12, 10))],
+                  ["Total Cost (purchase + interest)", fL(path === "solo" ? 25000000 + soloInterest : 65000000 + (groupEmi * gn - group.loan))],
+                  ["10Y Net Gain", fL((path === "solo" ? 25000000 : 65000000) * Math.pow(1.12, 10) - (path === "solo" ? 25000000 + soloInterest : 65000000 + (groupEmi * gn - group.loan)))],
+                ].map(([l, v], i) => (
+                  <div key={i}>
+                    <div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)" }}>{l}</div>
+                    <div style={{ fontSize: 18, fontWeight: 700, color: i === 3 ? C.sage : "#fff", fontFamily: "'Playfair Display', serif", marginTop: 2 }}>{v}</div>
+                  </div>
+                ))}
+              </div>
+              {path === "group" && <div style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", marginTop: 12 }}>Per person share: {fL(((65000000 * Math.pow(1.12, 10)) - (65000000 + (groupEmi * gn - group.loan))) / 4)}</div>}
+            </div>
+          </>
+        )}
+
+        {/* PLAYBOOK TAB */}
+        {view === "risks" && (
+          <>
+            <div style={{ background: "#fff", borderRadius: 14, padding: 22, marginBottom: 12, border: "1px solid #eee" }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: C.navy, marginBottom: 14 }}>Due Diligence Checklist</div>
+              {[
+                ["✅ RERA verification", "Cross-check RERA number on Gujarat RERA portal (gujrera.gujarat.gov.in)"],
+                ["✅ SEZ vs Non-SEZ", "Buy Non-SEZ residential — fewer occupancy restrictions, wider tenant pool"],
+                ["✅ DTA vs IFSC zone", "Residential falls in DTA (Domestic Tariff Area) — normal Indian tax laws apply"],
+                ["✅ Builder track record", "Sobha (Tier A — national track record) > Shilp > Bakeri > Others"],
+                ["✅ Carpet vs super area", "Always negotiate on carpet area. GIFT City projects quote both — verify"],
+                ["✅ Possession timeline", "Ready (Sobha Dream Heights) vs UC (2027-28). UC = lower entry price but cash locked"],
+                ["✅ Title & encumbrance", "Get encumbrance certificate for past 13 years. Lawyer cost: ₹15-25K"],
+                ["✅ GST status", "Under-construction: 5% GST (no ITC). Ready-to-move: no GST"],
+              ].map(([t, d], i) => (
+                <div key={i} style={{ padding: "8px 0", borderBottom: i < 7 ? "1px solid #f5f5f5" : "none" }}>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: C.navy }}>{t}</div>
+                  <div style={{ fontSize: 11, color: "#888", marginTop: 2 }}>{d}</div>
+                </div>
+              ))}
+            </div>
+
+            {path === "group" && (
+              <div style={{ background: "#fff", borderRadius: 14, padding: 22, marginBottom: 12, border: `1.5px solid ${C.coral}30` }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: C.coral, marginBottom: 14 }}>⚠️ Group Investment Legal Framework</div>
+                {[
+                  ["Co-ownership Agreement", "Draft MOU covering: ownership %, EMI responsibility, exit rights, dispute resolution, property management. Cost: ₹25-40K via lawyer."],
+                  ["Title structure", "Option A: Individual titles (cleanest — each person owns their unit). Option B: LLP (best for commercial — share transfer without stamp duty). Option C: Joint ownership (messy — avoid for 4 people)."],
+                  ["Exit mechanism", "Define lock-in (min 3 yrs), right of first refusal among partners, valuation method (avg of 2 independent valuations), and timeline for buyout."],
+                  ["EMI default clause", "If one partner can't pay EMI, others cover for 3 months max. After that: forced sale of that partner's unit, or buyout at 90% of current value."],
+                  ["Rental management", "Appoint one person (or rotate yearly) as property manager. Or hire GIFT City property management firm (~8-10% of rent)."],
+                ].map(([t, d], i) => (
+                  <div key={i} style={{ padding: "10px 0", borderBottom: i < 4 ? "1px solid #f5f5f5" : "none" }}>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: C.navy }}>{t}</div>
+                    <div style={{ fontSize: 11, color: "#666", marginTop: 3, lineHeight: 1.6 }}>{d}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Action plan */}
+            <div style={{ background: `linear-gradient(135deg, ${C.navy}, #2a2a4e)`, borderRadius: 14, padding: 22 }}>
+              <div style={{ fontSize: 11, color: C.terra, textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 600 }}>90-Day Action Plan</div>
+              {[
+                { week: "Week 1-2", action: "Research trip to GIFT City. Visit Sobha Avalon, Bakeri Stella, Shilp North Sky. Meet 2-3 brokers. Get price sheets.", color: C.terra },
+                { week: "Week 3-4", action: path === "solo" ? "Shortlist 2 units. Get loan pre-approval from SBI/HDFC. Engage lawyer for title check." : "Align friends on strategy. Draft co-ownership MOU. Get individual loan pre-approvals.", color: C.gold },
+                { week: "Week 5-8", action: "Negotiate with builder (aim for 5-8% discount on UC projects). Lock booking amount (₹5-10L per unit). Sign agreement to sell.", color: C.sage },
+                { week: "Week 9-12", action: "Complete registration. Set up rental listing on NoBroker/99acres. If UC — track construction milestones quarterly.", color: C.sky },
+              ].map((s, i) => (
+                <div key={i} style={{ display: "flex", gap: 14, padding: "12px 0", borderBottom: i < 3 ? "1px solid rgba(255,255,255,0.06)" : "none" }}>
+                  <div style={{ width: 60, flexShrink: 0 }}><div style={{ fontSize: 11, fontWeight: 700, color: s.color }}>{s.week}</div></div>
+                  <div style={{ fontSize: 12, color: "rgba(255,255,255,0.55)", lineHeight: 1.6 }}>{s.action}</div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}

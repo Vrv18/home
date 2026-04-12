@@ -27,6 +27,13 @@ fn hide_stats_window(app_handle: tauri::AppHandle) {
 }
 
 #[tauri::command]
+fn hide_microbreak_window(app_handle: tauri::AppHandle) {
+    if let Some(window) = app_handle.get_webview_window("microbreak") {
+        let _ = window.hide();
+    }
+}
+
+#[tauri::command]
 fn get_history() -> History {
     persistence::load_history()
 }
@@ -186,7 +193,7 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .manage(timer_state)
-        .invoke_handler(tauri::generate_handler![get_state, toggle_timer, hide_window, hide_stats_window, get_history, open_stats])
+        .invoke_handler(tauri::generate_handler![get_state, toggle_timer, hide_window, hide_stats_window, hide_microbreak_window, get_history, open_stats])
         .setup(move |app| {
             let app_handle = app.handle().clone();
             let mut state = timer_for_setup.lock().unwrap();
@@ -198,6 +205,11 @@ pub fn run() {
             // Explicitly hide main window and unset fullscreen (fixes macOS resume ghosting)
             if let Some(window) = app_handle.get_webview_window("main") {
                 let _ = window.set_fullscreen(false);
+                let _ = window.hide();
+            }
+            
+            // Ensure micro-break window is hidden on startup
+            if let Some(window) = app_handle.get_webview_window("microbreak") {
                 let _ = window.hide();
             }
             
@@ -315,6 +327,16 @@ pub fn run() {
                     std::thread::sleep(std::time::Duration::from_millis(1000));
                     let mut state = timer_for_tick.lock().unwrap();
                     let old_time = state.format_time();
+                    
+                    // Check for micro-break trigger (every 5 minutes during focus)
+                    if state.should_trigger_micro_break() {
+                        if let Some(window) = app_handle_for_tick.get_webview_window("microbreak") {
+                            let _ = window.show();
+                            let _ = window.set_focus();
+                            let _ = window.set_always_on_top(true);
+                        }
+                    }
+                    
                     if let Some((completed, minutes)) = state.calculate_remaining(false) {
                         persistence::log_session(completed, minutes);
                         

@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Real Estate Recon</title>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/recharts@2.12.7/umd/Recharts.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+      const { useState, useMemo } = React;
+      const { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, LineChart, Line, CartesianGrid } = Recharts;
+
+      const fmtL = (n) => {
+        if (n >= 10000000) return `₹${(n / 10000000).toFixed(2)} Cr`;
+        if (n >= 100000) return `₹${(n / 100000).toFixed(1)} L`;
+        return `₹${Math.round(n).toLocaleString("en-IN")}`;
+      };
+      const fmtF = (n) => `₹${Math.round(n).toLocaleString("en-IN")}`;
+
+      const COLORS = ["#e07a5f", "#3d405b", "#81b29a", "#f2cc8f", "#6d6875"];
+      const LABELS = ["HYD Land", "HYD Flat", "BLR Flat", "GIFT Flat", "GIFT Land"];
+
+      const OPTIONS = [
+        {
+          id: "hyd_land",
+          icon: "🌾",
+          label: "Land near Future City",
+          city: "Hyderabad (Mucherla belt)",
+          type: "Land",
+          cost: 10000000,
+          area: "0.5 acre (~2420 sq yd)",
+          priceUnit: "~₹4,130/sq yd (agricultural-to-NA belt)",
+          fundingMode: "cash",
+          stampDuty: 7.5,
+          regPct: 0.5,
+          stampAmt: 750000,
+          regAmt: 50000,
+          totalUpfront: 10800000,
+          emi: 0,
+          rental: 0,
+          rentalYield: 0,
+          appreciation: { low: 15, mid: 25, high: 40 },
+          horizon: "5-10 years",
+          liquidity: 2,
+          riskScore: 4,
+          readiness: 1,
+          incomeGen: 1,
+          appreciationScore: 5,
+          govtBacking: 4,
+          pros: [
+            "Massive upside: Colliers report names Mucherla among India's 8 emerging micro-markets",
+            "30,000 acre Future City — India's first Net-Zero city — with AI, pharma, sports hubs",
+            "Current land prices ₹15K-40K/sq yd; prices already doubled from ₹8K in 2024",
+            "RRR + Metro expansion + Pharma City = multi-trigger appreciation",
+            "Full cash purchase — no EMI stress, pure equity play",
+          ],
+          cons: [
+            "Zero rental income for years — pure capital lock-up",
+            "5-10 year horizon minimum; infrastructure timelines often slip",
+            "Title verification critical — agricultural vs NA conversion status",
+            "Illiquid — selling land takes months, especially in developing zones",
+            "No livable asset — cannot self-occupy or rent out",
+          ],
+          verdict: "High-conviction moonshot",
+          verdictColor: "#e07a5f",
+        },
+        {
+          id: "hyd_flat",
+          label: "Flat in East Hyderabad",
+          icon: "🏢",
+          city: "Uppal / LB Nagar / Nagole corridor",
+          type: "Flat (3BHK)",
+          cost: 25000000,
+          area: "~2000 sqft (3BHK gated community)",
+          priceUnit: "~₹6,500-8,000/sqft",
+          fundingMode: "loan",
+          stampDuty: 6,
+          regPct: 0.5,
+          stampAmt: 1500000,
+          regAmt: 125000,
+          totalUpfront: 11625000,
+          emi: 192000,
+          rental: 25000,
+          rentalYield: 1.2,
+          appreciation: { low: 8, mid: 12, high: 18 },
+          horizon: "3-7 years",
+          liquidity: 3,
+          riskScore: 2,
+          readiness: 4,
+          incomeGen: 2,
+          appreciationScore: 4,
+          govtBacking: 3,
+          pros: [
+            "East Hyderabad is Colliers-identified growth zone; Uppal saw 33% appreciation in 1 year",
+            "Metro-connected — existing Blue Line to Uppal + extensions planned",
+            "₹2.5 Cr gets a premium 3BHK in a gated community (1800-2200 sqft)",
+            "Rental demand from IT/pharma workforce (Infosys SEZ Pocharam nearby)",
+            "Can self-occupy if you ever relocate to Hyderabad",
+          ],
+          cons: [
+            "₹1.92L/month EMI for 10 years on ₹1.5 Cr loan — massive cash flow burden",
+            "Rental yield weak at ~1.2% — rent won't cover even 15% of EMI",
+            "East Hyd lags West Hyd (Gachibowli/Kokapet) in premium buyer demand",
+            "Builder risk — verify HMDA/RERA approval, delivery track record",
+            "Maintenance + property tax add ₹5-8K/month ongoing cost",
+          ],
+          verdict: "Solid but EMI-heavy",
+          verdictColor: "#3d405b",
+        },
+        {
+          id: "blr_flat",
+          label: "Flat in Bangalore",
+          icon: "🏙️",
+          city: "East/North Bangalore (Whitefield / Sarjapur / Hennur)",
+          type: "Flat (3BHK)",
+          cost: 25000000,
+          area: "~1400-1600 sqft (3BHK premium)",
+          priceUnit: "~₹8,000-10,000/sqft",
+          fundingMode: "loan",
+          stampDuty: 5,
+          regPct: 1,
+          stampAmt: 1250000,
+          regAmt: 250000,
+          totalUpfront: 11500000,
+          emi: 192000,
+          rental: 30000,
+          rentalYield: 1.4,
+          appreciation: { low: 6, mid: 9, high: 14 },
+          horizon: "5+ years",
+          liquidity: 4,
+          riskScore: 2,
+          readiness: 5,
+          incomeGen: 3,
+          appreciationScore: 3,
+          govtBacking: 2,
+          pros: [
+            "You live here — potential to self-occupy, near Portkey office ecosystem",
+            "Bangalore has India's deepest rental market; 30K+ rent achievable at ₹2.5Cr",
+            "Proven IT corridor demand — Whitefield/Sarjapur consistently appreciating",
+            "Highest liquidity among all 5 options — easiest to exit in 2-3 years",
+            "Tax benefits: 80C + 24(b) on home loan = ₹1L+ annual saving",
+          ],
+          cons: [
+            "Same EMI burden as Hyderabad flat — ₹1.92L/month for 10 years",
+            "₹2.5 Cr buys less space here than Hyderabad (1400 vs 2000 sqft)",
+            "Appreciation has moderated — 9% avg vs Hyd's 12-15%",
+            "Infrastructure chaos — metro delays, traffic, water issues",
+            "Already expensive — you're buying at or near peak for many micro-markets",
+          ],
+          verdict: "Safe & strategic (home turf)",
+          verdictColor: "#81b29a",
+        },
+        {
+          id: "gift_flat",
+          label: "Flat in GIFT City",
+          icon: "🏦",
+          city: "GIFT City, Gandhinagar",
+          type: "Flat (3BHK)",
+          cost: 25000000,
+          area: "~1800-2200 sqft (3BHK in Sobha/Shilp)",
+          priceUnit: "₹8,500-12,800/sqft (61.5% up in 3 yrs)",
+          fundingMode: "loan",
+          stampDuty: 4.9,
+          regPct: 1,
+          stampAmt: 1225000,
+          regAmt: 250000,
+          totalUpfront: 11475000,
+          emi: 192000,
+          rental: 35000,
+          rentalYield: 1.7,
+          appreciation: { low: 10, mid: 15, high: 22 },
+          horizon: "3-7 years",
+          liquidity: 2,
+          riskScore: 3,
+          readiness: 3,
+          incomeGen: 3,
+          appreciationScore: 5,
+          govtBacking: 5,
+          pros: [
+            "India's ONLY operational smart city IFSC — massive govt backing (IFSCA regulated)",
+            "61.5% price appreciation in just 3 years — strongest among all options",
+            "Sobha, Bakeri, Shilp — reputed builders with RERA-registered projects",
+            "Rental demand from IFSC professionals — ₹35-45K/month for 2-3BHK",
+            "Close to home (Ahmedabad) — family connection + Gujarat familiarity",
+          ],
+          cons: [
+            "Still under-developed as a residential hub — limited retail, schools, hospitals",
+            "Most projects under construction — possession 2027-28, cash locked till then",
+            "Rental market thin — only ~886 acres total; tenant pool is niche (finance sector)",
+            "Same ₹1.92L EMI burden as other flat options",
+            "Liquidity risk — resale market still nascent compared to BLR/HYD",
+          ],
+          verdict: "Highest alpha, niche risk",
+          verdictColor: "#f2cc8f",
+        },
+        {
+          id: "gift_land",
+          label: "Land near GIFT City",
+          icon: "🏗️",
+          city: "Kudasan / Raysan / Sargasan (near GIFT City)",
+          type: "Land",
+          cost: 10000000,
+          area: "~200-250 sq yd plot (Kudasan belt)",
+          priceUnit: "₹45L avg for 1000 sqft plot in Kudasan",
+          fundingMode: "cash",
+          stampDuty: 4.9,
+          regPct: 1,
+          stampAmt: 490000,
+          regAmt: 100000,
+          totalUpfront: 10590000,
+          emi: 0,
+          rental: 0,
+          rentalYield: 0,
+          appreciation: { low: 5, mid: 10, high: 15 },
+          horizon: "3-7 years",
+          liquidity: 3,
+          riskScore: 2,
+          readiness: 2,
+          incomeGen: 1,
+          appreciationScore: 3,
+          govtBacking: 4,
+          pros: [
+            "Kudasan is 10 min from GIFT City — direct spillover beneficiary",
+            "Gujarat govt's strongest smart city push — GIFT City alone is 886 acres",
+            "Mature area — schools, hospitals, PDPU university already operational",
+            "Lower risk than Hyderabad land — area is already semi-developed",
+            "No EMI — full cash play, Gujarat's clear title/NA conversion process",
+          ],
+          cons: [
+            "Appreciation already priced in — 34% in 5 years (vs Mucherla's 100%+)",
+            "Kudasan flat rates actually declined 1.1% last year — market cooling signal",
+            "No rental income — dead capital until you build or sell",
+            "Smaller plot at ₹1Cr vs Hyderabad's 0.5 acre — less land per rupee",
+            "Gujarat land market less liquid than Hyderabad or Bangalore",
+          ],
+          verdict: "Conservative bet, limited upside",
+          verdictColor: "#6d6875",
+        },
+      ];
+
+      const FUNDING = {
+        cash: 5000000,
+        gold: 2000000,
+        father: 3000000,
+        total: 10000000,
+        loanForFlat: 15000000,
+        loanTenure: 10,
+        loanRate: 9,
+      };
+
+      const CustomTooltip = ({ active, payload }) => {
+        if (!active || !payload?.length) return null;
+        return (
+          <div style={{ background: "#1a1a2e", padding: "8px 12px", borderRadius: 8, boxShadow: "0 4px 16px rgba(0,0,0,0.3)" }}>
+            {payload.map((p, i) => (
+              <div key={i} style={{ color: p.color || "#fff", fontSize: 11, fontFamily: "'DM Sans', sans-serif" }}>
+                {p.name}: {typeof p.value === "number" ? (p.value > 1000 ? fmtL(p.value) : p.value.toFixed(1)) : p.value}
+              </div>
+            ))}
+          </div>
+        );
+      };
+
+      const ScoreDot = ({ score, max = 5, color }) => (
+        <div style={{ display: "flex", gap: 3 }}>
+          {Array.from({ length: max }).map((_, i) => (
+            <div key={i} style={{ width: 8, height: 8, borderRadius: "50%", background: i < score ? color : "#e8e8e8" }} />
+          ))}
+        </div>
+      );
+
+      function App() {
+        const [selected, setSelected] = useState(null);
+        const [view, setView] = useState("overview");
+
+        const r = FUNDING.loanRate / 12 / 100;
+        const n = FUNDING.loanTenure * 12;
+        const flatEmi = FUNDING.loanForFlat * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
+        const totalInterest = flatEmi * n - FUNDING.loanForFlat;
+
+        // Projection data
+        const projectionData = useMemo(() => {
+          const years = [];
+          for (let yr = 0; yr <= 10; yr++) {
+            const row = { year: yr };
+            OPTIONS.forEach((o) => {
+              const rate = o.appreciation.mid / 100;
+              row[o.id] = Math.round(o.cost * Math.pow(1 + rate, yr));
+            });
+            years.push(row);
+          }
+          return years;
+        }, []);
+
+        const radarData = [
+          { metric: "Appreciation", ...Object.fromEntries(OPTIONS.map(o => [o.id, o.appreciationScore])) },
+          { metric: "Liquidity", ...Object.fromEntries(OPTIONS.map(o => [o.id, o.liquidity])) },
+          { metric: "Income", ...Object.fromEntries(OPTIONS.map(o => [o.id, o.incomeGen])) },
+          { metric: "Readiness", ...Object.fromEntries(OPTIONS.map(o => [o.id, o.readiness])) },
+          { metric: "Govt Push", ...Object.fromEntries(OPTIONS.map(o => [o.id, o.govtBacking])) },
+          { metric: "Safety", ...Object.fromEntries(OPTIONS.map(o => [o.id, 5 - o.riskScore + 1])) },
+        ];
+
+        const sel = selected !== null ? OPTIONS[selected] : null;
+
+        return (
+          <div style={{ minHeight: "100vh", background: "#faf9f6", fontFamily: "'DM Sans', sans-serif" }}>
+            <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet" />
+
+            {/* Header */}
+            <div style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #3d405b 100%)", padding: "30px 20px 22px", position: "relative", overflow: "hidden" }}>
+              <div style={{ position: "absolute", top: -60, right: -40, width: 180, height: 180, borderRadius: "50%", background: "rgba(224,122,95,0.06)" }} />
+              <div style={{ fontSize: 10, color: "#e07a5f", textTransform: "uppercase", letterSpacing: "0.18em", fontWeight: 600 }}>Real Estate Reconnaissance</div>
+              <h1 style={{ color: "#fff", fontSize: 22, fontFamily: "'Playfair Display', serif", fontWeight: 700, margin: "4px 0 0" }}>5 Options, 1 Decision</h1>
+              <div style={{ display: "flex", gap: 12, marginTop: 14, flexWrap: "wrap" }}>
+                <div><div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)" }}>Cash + Gold + Father</div><div style={{ fontSize: 16, fontWeight: 700, color: "#e07a5f", fontFamily: "'Playfair Display', serif" }}>{fmtL(FUNDING.total)}</div></div>
+                <div style={{ width: 1, background: "rgba(255,255,255,0.1)" }} />
+                <div><div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)" }}>Flat EMI (₹1.5Cr @ 9%)</div><div style={{ fontSize: 16, fontWeight: 700, color: "#81b29a", fontFamily: "'Playfair Display', serif" }}>{fmtF(flatEmi)}/mo</div></div>
+                <div style={{ width: 1, background: "rgba(255,255,255,0.1)" }} />
+                <div><div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)" }}>Total Interest (10yr)</div><div style={{ fontSize: 16, fontWeight: 700, color: "#f2cc8f", fontFamily: "'Playfair Display', serif" }}>{fmtL(totalInterest)}</div></div>
+              </div>
+            </div>
+
+            {/* Funding bar */}
+            <div style={{ padding: "14px 16px 0" }}>
+              <div style={{ background: "#fff", borderRadius: 12, padding: "14px 16px", border: "1px solid #eee", marginBottom: 4 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: "#1a1a2e", marginBottom: 8 }}>Funding Stack — ₹1 Cr (land) or ₹1 Cr down + ₹1.5 Cr loan (flat)</div>
+                <div style={{ display: "flex", height: 10, borderRadius: 5, overflow: "hidden" }}>
+                  <div style={{ width: "50%", background: "#1a1a2e" }} title="Cash ₹50L" />
+                  <div style={{ width: "20%", background: "#e07a5f" }} title="Gold Loan ₹20L" />
+                  <div style={{ width: "30%", background: "#f2cc8f" }} title="Father ₹30L" />
+                </div>
+                <div style={{ display: "flex", gap: 14, fontSize: 10, color: "#999", marginTop: 6 }}>
+                  <span><span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 2, background: "#1a1a2e", marginRight: 3 }} />Cash ₹50L</span>
+                  <span><span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 2, background: "#e07a5f", marginRight: 3 }} />Gold ₹20L</span>
+                  <span><span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 2, background: "#f2cc8f", marginRight: 3 }} />Father ₹30L</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Tabs */}
+            <div style={{ display: "flex", gap: 4, padding: "10px 16px 0", overflowX: "auto" }}>
+              {[["overview", "Compare"], ["deep", "Deep Dive"], ["projection", "Projections"]].map(([k, l]) => (
+                <button key={k} onClick={() => setView(k)} style={{
+                  padding: "8px 14px", border: "none", cursor: "pointer", borderRadius: 8,
+                  background: view === k ? "#1a1a2e" : "transparent", color: view === k ? "#fff" : "#888",
+                  fontFamily: "'DM Sans', sans-serif", fontSize: 12, fontWeight: 600, whiteSpace: "nowrap",
+                }}>{l}</button>
+              ))}
+            </div>
+
+            <div style={{ padding: "12px 16px 40px", maxWidth: 640, margin: "0 auto" }}>
+
+              {/* OVERVIEW */}
+              {view === "overview" && (
+                <>
+                  {/* Option cards */}
+                  {OPTIONS.map((o, i) => (
+                    <div key={o.id} onClick={() => { setSelected(i); setView("deep"); }} style={{
+                      background: "#fff", borderRadius: 14, padding: "16px 18px", marginBottom: 10,
+                      border: `1.5px solid ${selected === i ? COLORS[i] : "#eee"}`, cursor: "pointer",
+                      boxShadow: "0 1px 3px rgba(0,0,0,0.04)", transition: "all 0.2s",
+                    }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                        <div style={{ fontSize: 24 }}>{o.icon}</div>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a2e" }}>{o.label}</div>
+                          <div style={{ fontSize: 11, color: "#999", marginTop: 1 }}>{o.city}</div>
+                        </div>
+                        <div style={{ textAlign: "right" }}>
+                          <div style={{ fontSize: 18, fontWeight: 700, color: COLORS[i], fontFamily: "'Playfair Display', serif" }}>{fmtL(o.cost)}</div>
+                          <div style={{ fontSize: 10, color: "#bbb" }}>{o.type}</div>
+                        </div>
+                      </div>
+                      <div style={{ display: "flex", gap: 12, marginTop: 12, flexWrap: "wrap" }}>
+                        {[
+                          ["Upfront", fmtL(o.totalUpfront)],
+                          ["EMI", o.emi ? `${fmtF(flatEmi)}/mo` : "None"],
+                          ["Rent", o.rental ? `${fmtF(o.rental)}/mo` : "—"],
+                          ["Mid Appr.", `${o.appreciation.mid}%/yr`],
+                        ].map(([l, v], j) => (
+                          <div key={j} style={{ flex: "1 0 70px" }}>
+                            <div style={{ fontSize: 9, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.06em" }}>{l}</div>
+                            <div style={{ fontSize: 12, fontWeight: 600, color: "#1a1a2e" }}>{v}</div>
+                          </div>
+                        ))}
+                      </div>
+                      <div style={{ marginTop: 10, padding: "6px 10px", background: `${COLORS[i]}12`, borderRadius: 6, fontSize: 11, fontWeight: 600, color: COLORS[i] }}>
+                        {o.verdict}
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* Radar */}
+                  <div style={{ background: "#fff", borderRadius: 14, padding: 20, marginTop: 6, border: "1px solid #eee" }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#1a1a2e", marginBottom: 4 }}>Multi-Factor Scorecard</div>
+                    <div style={{ fontSize: 11, color: "#999", marginBottom: 12 }}>Each axis scored 1-5 (higher = better)</div>
+                    <ResponsiveContainer width="100%" height={260}>
+                      <RadarChart data={radarData}>
+                        <PolarGrid stroke="#e8e8e8" />
+                        <PolarAngleAxis dataKey="metric" tick={{ fontSize: 10, fill: "#888" }} />
+                        <PolarRadiusAxis domain={[0, 5]} tick={false} axisLine={false} />
+                        {OPTIONS.map((o, i) => (
+                          <Radar key={o.id} name={LABELS[i]} dataKey={o.id} stroke={COLORS[i]} fill={COLORS[i]} fillOpacity={0.08} strokeWidth={1.5} />
+                        ))}
+                        <Tooltip />
+                      </RadarChart>
+                    </ResponsiveContainer>
+                    <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>
+                      {OPTIONS.map((o, i) => (
+                        <span key={i} style={{ fontSize: 10, color: COLORS[i], fontWeight: 600 }}>
+                          <span style={{ display: "inline-block", width: 10, height: 3, background: COLORS[i], marginRight: 3, verticalAlign: "middle" }} />
+                          {LABELS[i]}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* DEEP DIVE */}
+              {view === "deep" && (
+                <>
+                  {/* Selector */}
+                  <div style={{ display: "flex", gap: 6, marginBottom: 14, flexWrap: "wrap" }}>
+                    {OPTIONS.map((o, i) => (
+                      <button key={i} onClick={() => setSelected(i)} style={{
+                        padding: "7px 12px", borderRadius: 20, border: selected === i ? `1.5px solid ${COLORS[i]}` : "1px solid #e0e0e0",
+                        background: selected === i ? `${COLORS[i]}10` : "#fff", color: selected === i ? COLORS[i] : "#888",
+                        fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "'DM Sans', sans-serif",
+                      }}>{o.icon} {LABELS[i]}</button>
+                    ))}
+                  </div>
+
+                  {sel ? (
+                    <>
+                      {/* Detail Card */}
+                      <div style={{ background: "#fff", borderRadius: 14, padding: 22, marginBottom: 12, border: `1.5px solid ${COLORS[selected]}30` }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                          <div>
+                            <div style={{ fontSize: 18, fontWeight: 700, fontFamily: "'Playfair Display', serif", color: "#1a1a2e" }}>{sel.label}</div>
+                            <div style={{ fontSize: 12, color: "#888", marginTop: 2 }}>{sel.city}</div>
+                          </div>
+                          <div style={{ fontSize: 24, fontWeight: 700, color: COLORS[selected], fontFamily: "'Playfair Display', serif" }}>{fmtL(sel.cost)}</div>
+                        </div>
+                        <div style={{ marginTop: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                          {[
+                            ["Area", sel.area],
+                            ["Price Benchmark", sel.priceUnit],
+                            ["Stamp Duty", `${sel.stampDuty}% (${fmtL(sel.stampAmt)})`],
+                            ["Total Upfront", fmtL(sel.totalUpfront)],
+                            ["Monthly EMI", sel.emi ? fmtF(flatEmi) : "None (cash buy)"],
+                            ["Monthly Rent", sel.rental ? fmtF(sel.rental) : "N/A (land)"],
+                            ["Rental Yield", sel.rentalYield ? `${sel.rentalYield}%` : "0%"],
+                            ["Ideal Horizon", sel.horizon],
+                          ].map(([l, v], j) => (
+                            <div key={j}>
+                              <div style={{ fontSize: 10, color: "#bbb", textTransform: "uppercase", letterSpacing: "0.05em" }}>{l}</div>
+                              <div style={{ fontSize: 13, fontWeight: 600, color: "#1a1a2e", marginTop: 2 }}>{v}</div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Scores */}
+                      <div style={{ background: "#fff", borderRadius: 14, padding: 22, marginBottom: 12, border: "1px solid #eee" }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: "#1a1a2e", marginBottom: 12 }}>Risk & Reward Profile</div>
+                        {[
+                          ["Appreciation Potential", sel.appreciationScore],
+                          ["Liquidity / Exit Ease", sel.liquidity],
+                          ["Income Generation", sel.incomeGen],
+                          ["Move-in Readiness", sel.readiness],
+                          ["Govt / Infra Backing", sel.govtBacking],
+                          ["Safety (inverse risk)", 5 - sel.riskScore + 1],
+                        ].map(([l, s], j) => (
+                          <div key={j} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 0", borderBottom: j < 5 ? "1px solid #f5f5f5" : "none" }}>
+                            <span style={{ fontSize: 12, color: "#666" }}>{l}</span>
+                            <ScoreDot score={s} color={COLORS[selected]} />
+                          </div>
+                        ))}
+                        <div style={{ marginTop: 14, display: "flex", gap: 8 }}>
+                          <div style={{ fontSize: 12, fontWeight: 600, color: "#666" }}>Appreciation range:</div>
+                          <div style={{ fontSize: 12 }}>
+                            <span style={{ color: "#81b29a" }}>{sel.appreciation.low}%</span> / <span style={{ fontWeight: 700, color: COLORS[selected] }}>{sel.appreciation.mid}%</span> / <span style={{ color: "#e07a5f" }}>{sel.appreciation.high}%</span>
+                            <span style={{ color: "#bbb" }}> (low/mid/high)</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Pros & Cons */}
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 12 }}>
+                        <div style={{ background: "#f0faf5", borderRadius: 14, padding: 18 }}>
+                          <div style={{ fontSize: 12, fontWeight: 700, color: "#2d6a4f", marginBottom: 10 }}>✅ Pros</div>
+                          {sel.pros.map((p, i) => (
+                            <div key={i} style={{ fontSize: 11, color: "#555", marginBottom: 8, lineHeight: 1.5, paddingLeft: 0 }}>{p}</div>
+                          ))}
+                        </div>
+                        <div style={{ background: "#fef5f3", borderRadius: 14, padding: 18 }}>
+                          <div style={{ fontSize: 12, fontWeight: 700, color: "#c0392b", marginBottom: 10 }}>⚠️ Cons</div>
+                          {sel.cons.map((c, i) => (
+                            <div key={i} style={{ fontSize: 11, color: "#555", marginBottom: 8, lineHeight: 1.5, paddingLeft: 0 }}>{c}</div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Verdict */}
+                      <div style={{ background: `linear-gradient(135deg, ${COLORS[selected]}20, ${COLORS[selected]}08)`, borderRadius: 14, padding: 20, borderLeft: `4px solid ${COLORS[selected]}` }}>
+                        <div style={{ fontSize: 16, fontWeight: 700, color: "#1a1a2e", fontFamily: "'Playfair Display', serif" }}>{sel.verdict}</div>
+                        <div style={{ fontSize: 12, color: "#666", marginTop: 6, lineHeight: 1.6 }}>
+                          {sel.id === "hyd_land" && "Best pure-appreciation play. ₹1Cr buys 0.5 acre in India's next mega-city zone. But it's a 5-10 year lockup with zero income. Perfect if you have cash to spare and patience to hold through infra cycles."}
+                          {sel.id === "hyd_flat" && "Good growth corridor but the EMI math is painful. ₹1.92L/month for 10 years while earning ₹25K rent = net ₹1.67L monthly drain. Only makes sense if you're planning to relocate to Hyderabad or have significant income growth runway."}
+                          {sel.id === "blr_flat" && "The 'safe harbor' option. You live in Bangalore, know the market, and could self-occupy. Lower appreciation than Hyderabad/GIFT but highest liquidity and exit flexibility. Also unlocks tax benefits on the home loan."}
+                          {sel.id === "gift_flat" && "Highest alpha potential among flats. GIFT City's 61.5% 3-year appreciation is hard to ignore, and it's India's only IFSC smart city. But residential ecosystem is still nascent — this is a bet on GIFT City's residential demand catching up to its commercial momentum."}
+                          {sel.id === "gift_land" && "Safest of the two land options but with the tamest upside. Kudasan is already semi-mature, and price appreciation has slowed. Better than an FD, but won't deliver the 3-5x returns that Mucherla could."}
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <div style={{ textAlign: "center", padding: 40, color: "#bbb" }}>
+                      <div style={{ fontSize: 28 }}>👆</div>
+                      <div style={{ fontSize: 13, marginTop: 8 }}>Select an option above to deep dive</div>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* PROJECTIONS */}
+              {view === "projection" && (
+                <>
+                  <div style={{ background: "#fff", borderRadius: 14, padding: 22, marginBottom: 12, border: "1px solid #eee" }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#1a1a2e", marginBottom: 4 }}>10-Year Value Projection (Mid Scenario)</div>
+                    <div style={{ fontSize: 11, color: "#999", marginBottom: 16 }}>Based on each option's mid-case annual appreciation rate</div>
+                    <ResponsiveContainer width="100%" height={240}>
+                      <LineChart data={projectionData}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                        <XAxis dataKey="year" fontSize={10} tick={{ fill: "#aaa" }} label={{ value: "Year", position: "bottom", fontSize: 10, fill: "#bbb" }} />
+                        <YAxis fontSize={10} tick={{ fill: "#aaa" }} tickFormatter={v => fmtL(v)} width={55} />
+                        <Tooltip content={<CustomTooltip />} />
+                        {OPTIONS.map((o, i) => (
+                          <Line key={o.id} type="monotone" dataKey={o.id} stroke={COLORS[i]} strokeWidth={2} dot={false} name={LABELS[i]}
+                            strokeDasharray={o.type === "Land" ? "6 3" : "0"} />
+                        ))}
+                      </LineChart>
+                    </ResponsiveContainer>
+                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center", marginTop: 8 }}>
+                      {OPTIONS.map((o, i) => (
+                        <span key={i} style={{ fontSize: 10, color: COLORS[i], fontWeight: 600 }}>
+                          <span style={{ display: "inline-block", width: 12, height: 3, background: COLORS[i], marginRight: 3, verticalAlign: "middle", borderTop: o.type === "Land" ? `2px dashed ${COLORS[i]}` : "none", height: o.type === "Land" ? 0 : 3 }} />
+                          {LABELS[i]}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 5-year & 10-year comparison */}
+                  <div style={{ background: "#fff", borderRadius: 14, padding: 22, marginBottom: 12, border: "1px solid #eee" }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#1a1a2e", marginBottom: 14 }}>Value at Year 5 & 10 (Mid Scenario)</div>
+                    {OPTIONS.map((o, i) => {
+                      const v5 = Math.round(o.cost * Math.pow(1 + o.appreciation.mid / 100, 5));
+                      const v10 = Math.round(o.cost * Math.pow(1 + o.appreciation.mid / 100, 10));
+                      const totalCostFlat = o.emi ? o.totalUpfront + flatEmi * 120 - (o.rental * 120) : o.totalUpfront;
+                      const netGain10 = v10 - totalCostFlat;
+                      return (
+                        <div key={i} style={{ marginBottom: 14, paddingBottom: 14, borderBottom: i < 4 ? "1px solid #f5f5f5" : "none" }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                            <span style={{ fontSize: 13, fontWeight: 700, color: COLORS[i] }}>{o.icon} {LABELS[i]}</span>
+                            <span style={{ fontSize: 10, color: "#bbb" }}>{o.appreciation.mid}%/yr</span>
+                          </div>
+                          <div style={{ display: "flex", gap: 10 }}>
+                            <div style={{ flex: 1, background: "#f8f7f4", borderRadius: 8, padding: "8px 12px" }}>
+                              <div style={{ fontSize: 9, color: "#999" }}>YEAR 5</div>
+                              <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a2e", fontFamily: "'Playfair Display', serif" }}>{fmtL(v5)}</div>
+                              <div style={{ fontSize: 10, color: "#81b29a" }}>+{fmtL(v5 - o.cost)}</div>
+                            </div>
+                            <div style={{ flex: 1, background: "#f8f7f4", borderRadius: 8, padding: "8px 12px" }}>
+                              <div style={{ fontSize: 9, color: "#999" }}>YEAR 10</div>
+                              <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a2e", fontFamily: "'Playfair Display', serif" }}>{fmtL(v10)}</div>
+                              <div style={{ fontSize: 10, color: "#81b29a" }}>+{fmtL(v10 - o.cost)}</div>
+                            </div>
+                            <div style={{ flex: 1, background: netGain10 > 0 ? "#f0faf5" : "#fef5f3", borderRadius: 8, padding: "8px 12px" }}>
+                              <div style={{ fontSize: 9, color: "#999" }}>NET GAIN (10Y)</div>
+                              <div style={{ fontSize: 14, fontWeight: 700, color: netGain10 > 0 ? "#2d6a4f" : "#c0392b", fontFamily: "'Playfair Display', serif" }}>{fmtL(netGain10)}</div>
+                              <div style={{ fontSize: 10, color: "#999" }}>after all costs</div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Final recommendation */}
+                  <div style={{ background: "linear-gradient(135deg, #1a1a2e, #2d2d4e)", borderRadius: 16, padding: 24 }}>
+                    <div style={{ fontSize: 11, color: "#e07a5f", textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 600 }}>Vrv's Recommendation Matrix</div>
+                    <div style={{ fontSize: 18, fontWeight: 700, color: "#fff", fontFamily: "'Playfair Display', serif", marginTop: 8 }}>If picking ONE → GIFT City Flat</div>
+                    <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", marginTop: 8, lineHeight: 1.7 }}>
+                      Strongest combo of appreciation (61% in 3 yrs), govt backing (only IFSC in India), and Gujarat home-base proximity. EMI is heavy but India's smart city story + IFSCA regulatory moat make it the highest-alpha flat play.
+                    </div>
+                    <div style={{ fontSize: 18, fontWeight: 700, color: "#fff", fontFamily: "'Playfair Display', serif", marginTop: 18 }}>If picking TWO → GIFT Flat + Hyd Land</div>
+                    <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", marginTop: 8, lineHeight: 1.7 }}>
+                      Barbell strategy: one income-generating asset (GIFT flat with rent) + one pure moonshot (Mucherla land). ₹1Cr cash into land, ₹1Cr down on flat. Diversifies across Gujarat + Telangana with both near-term yield and long-term optionality.
+                    </div>
+                    <div style={{ marginTop: 18, padding: "12px 16px", background: "rgba(255,255,255,0.06)", borderRadius: 10 }}>
+                      <div style={{ fontSize: 11, color: "#f2cc8f", fontWeight: 600 }}>⚠️ Key decision factor</div>
+                      <div style={{ fontSize: 12, color: "rgba(255,255,255,0.6)", marginTop: 4, lineHeight: 1.5 }}>
+                        Can you sustain ₹1.9L EMI for 10 years alongside your other 2026 goals (Innova, school, trips)? If yes → flat. If the EMI pressure is too high → go all-in on Hyderabad land and skip the loan entirely.
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
+</html>

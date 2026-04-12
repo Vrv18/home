@@ -8,6 +8,7 @@
   },
   "app": {
     "withGlobalTauri": true,
+    "macOSPrivateApi": true,
     "windows": [
       {
         "label": "main",
@@ -29,6 +30,20 @@
         "resizable": false,
         "center": true,
         "decorations": false
+      },
+      {
+        "label": "microbreak",
+        "title": "Micro Break",
+        "width": 600,
+        "height": 400,
+        "url": "microbreak.html",
+        "visible": false,
+        "resizable": false,
+        "center": true,
+        "decorations": false,
+        "alwaysOnTop": true,
+        "transparent": true,
+        "skipTaskbar": true
       }
     ],
     "security": {

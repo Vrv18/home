@@ -34,6 +34,12 @@ When a Focus session (25m) completes, the screen gently blooms into a full-scree
 - **Total Focus**: No notifications. No distractions. Just you and the breath.
 - **Auto-Exit**: The Sanctuary dissolves when your break ends.
 
+### 👁️ Micro-Breaks
+Every 5 minutes during focus, a gentle 10-second reminder appears.
+- **Eye Care**: Prompts you to look away from the screen (20-20-20 rule)
+- **Non-Intrusive**: Auto-dismisses after 10 seconds
+- **Random Tips**: Rotating messages about eye care, stretching, and breathing
+
 ### ⏱ Calm Mode
 Feeling overwhelmed? Click **Calm Mode** in the menu to enter the Sanctuary instantly, without a timer. Stay as long as you need. "Forfeit" logic is replaced by "End Calm" grace.
 

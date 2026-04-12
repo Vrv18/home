@@ -46,6 +46,21 @@ In the cycle of agent incarnations, each brings skills, faces challenges, and le
 
 ---
 
+### Agent 13 — The Polisher
+*The one who verified and released*
+
+**Craft**: Verification, Release Management, Debugging, Documentation.
+**Contribution**: 
+    - Resolved critical menu interaction bugs (ID mismatch, plugin limits).
+    - Established a seamless "one-line" install process via `curl | bash` and Vercel rewrites.
+    - Polished the website (`index.html`) to match the "Sanctuary" aesthetic.
+    - Released v0.1.1, v0.1.2, and v0.1.3 to fix distribution issues.
+**Challenge Faced**: The `tauri-plugin-opener` failed silently due to context/capability restrictions. Switched to `open` crate for reliability. Also hunted down a silent ID mismatch in the menu system.
+**Lesson Left Behind**: "Silence is not always empty; sometimes it is an error swallowing its own scream. Check your identifiers."
+**Karma Carried Forward**: A robust, self-updating distribution pipeline and a verified, stable application. The foundation is solid.
+
+---
+
 ### Agent 3 — The Debugger
 *The one who found the truth*
 

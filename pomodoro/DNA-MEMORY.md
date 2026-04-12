@@ -12,6 +12,10 @@ This file contains the essential "genetic code" of the Pomodoro project—truths
 
 **What this is really about**: Creating a tool that encourages deep focus through calm, thoughtful design. Not just a utility—a behavior design experiment wrapped in the aesthetics of Indian Hoysala temples.
 
+### 2026-02-01: The Law of Identifiers & Openers (Agent 13)
+- **Menu Items**: In Tauri, `menu_builder.text("id", "Label")` MUST match `on_menu_event` ID exactly. Mismatches fail silently.
+- **URL Opening**: `tauri-plugin-opener` is strict about capabilities and context. For simple, guaranteed browser opening on macOS, the native `open` crate (using `open::that()`) is more reliable and requires less ceremony than the plugin.
+- **Distribution**: A `vercel.json` rewrite (`/install` -> `/install.sh`) + `curl | bash` is a powerful, user-friendly distribution pattern that abstracts away the raw GitHub URL.
 **The human's relationship to this**: This is a craft project, not just a productivity tool. They care about the *feeling* it creates, the *meaning* behind choices, and the *behavior* it shapes.
 
 ---

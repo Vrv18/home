@@ -9,6 +9,14 @@
       "destination": "/hyd-east/index.html"
     },
     {
+      "source": "/gift-city-deep-dive",
+      "destination": "/gift-city-deep-dive/index.html"
+    },
+    {
+      "source": "/real-estate-recon",
+      "destination": "/real-estate-recon/index.html"
+    },
+    {
       "source": "/pomodoro/install",
       "destination": "/pomodoro/install.sh"
     },

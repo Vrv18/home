@@ -33,6 +33,8 @@ pub struct TimerState {
     pub earned_break: u64,
     #[serde(default)]
     pub extensions: u8,
+    #[serde(default)]
+    pub last_micro_break: u64,  // Track last micro-break timestamp (elapsed seconds into session)
 }
 
 impl Default for TimerState {
@@ -47,6 +49,7 @@ impl Default for TimerState {
             start_time: None,
             earned_break: 0,
             extensions: 0,
+            last_micro_break: 0,
         }
     }
 }
@@ -54,6 +57,7 @@ impl Default for TimerState {
 impl TimerState {
     /// Calculate actual remaining time based on start_time (prevents drift)
     /// Returns Some((completed, minutes)) if a session just finished
+    /// Returns Some((false, 0)) if micro-break should trigger
     pub fn calculate_remaining(&mut self, is_offline_check: bool) -> Option<(bool, u32)> {
         self.check_date_reset();
         
@@ -94,6 +98,32 @@ impl TimerState {
             }
         }
         result
+    }
+    
+    /// Check if micro-break should trigger (every 5 minutes during focus)
+    /// Returns true if a micro-break should be shown
+    pub fn should_trigger_micro_break(&mut self) -> bool {
+        if self.status != Status::Focus || self.timer_type != TimerType::Focus {
+            return false;
+        }
+        
+        if let Some(start) = self.start_time {
+            let now = current_timestamp();
+            let elapsed = now.saturating_sub(start);
+            
+            // Trigger every 5 minutes (300 seconds)
+            let current_interval = elapsed / 300;
+            let last_interval = self.last_micro_break / 300;
+            
+            // Only trigger if we've crossed into a new 5-minute interval
+            // and we're not in the last 30 seconds of the session (to avoid overlap with full break)
+            if current_interval > last_interval && self.remaining > 30 {
+                self.last_micro_break = elapsed;
+                return true;
+            }
+        }
+        
+        false
     }
 
     fn check_date_reset(&mut self) {
@@ -144,6 +174,7 @@ impl TimerState {
         self.total = duration;
         self.remaining = duration;
         self.start_time = Some(current_timestamp());
+        self.last_micro_break = 0; // Reset micro-break tracker
     }
 
     pub fn start_break(&mut self, duration: u64) {

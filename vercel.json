@@ -23,6 +23,10 @@
     {
       "source": "/vendors",
       "destination": "/vendors/index.html"
-    }    
+    },
+    {
+      "source": "/krabi",
+      "destination": "/krabi-family-trip-may-2026.html"
+    }
   ]
 }

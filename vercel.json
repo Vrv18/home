@@ -27,6 +27,14 @@
     {
       "source": "/krabi",
       "destination": "/krabi-family-trip-may-2026.html"
+    },
+    {
+      "source": "/agent-gateway",
+      "destination": "/agent-gateway/index.html"
+    },
+    {
+      "source": "/agent-gateway/print",
+      "destination": "/agent-gateway/print.html"
     }
   ]
 }

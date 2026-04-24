@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Portkey — Agent Gateway</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif&display=swap" rel="stylesheet" />
+
+<style>
+  :root{
+    --bg:#F5F2EC;
+    --bg-2:#EDE8DE;
+    --ink:#0B0D0E;
+    --ink-2:#2A2D2F;
+    --muted:#6B6E71;
+    --rule:rgba(11,13,14,.14);
+    --rule-2:rgba(11,13,14,.08);
+    --accent:#E85D3A;           /* warm portkey-ish */
+    --accent-2:#F2A93B;
+    --ok:#2E9A6B;
+    --wire:#9AA0A4;
+    --chip:#ECE6D8;
+    --serif:"Instrument Serif", "Cormorant Garamond", Georgia, serif;
+    --sans:"Inter", ui-sans-serif, system-ui, sans-serif;
+    --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+  }
+  [data-theme="dark"]{
+    --bg:#0B0D0E;
+    --bg-2:#14171A;
+    --ink:#F2EFE7;
+    --ink-2:#D7D4CB;
+    --muted:#8A8F94;
+    --rule:rgba(242,239,231,.16);
+    --rule-2:rgba(242,239,231,.08);
+    --wire:#5A6166;
+    --chip:#1B1F22;
+  }
+  [data-fonts="grotesk"]{
+    --sans:"Space Grotesk", "Inter", system-ui, sans-serif;
+    --mono:"JetBrains Mono", "IBM Plex Mono", monospace;
+  }
+  [data-fonts="geist"]{
+    --sans:"Geist", "Inter", system-ui, sans-serif;
+    --mono:"Geist Mono", "IBM Plex Mono", monospace;
+  }
+
+  html,body{margin:0;background:#000;color:var(--ink);font-family:var(--sans);}
+
+  /* deck-stage shell overrides */
+  deck-stage{background:#000;}
+  deck-stage > section{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+    overflow:hidden;
+    position:relative;
+  }
+
+  /* utilities ------------------------------------------------------- */
+  .mono{font-family:var(--mono);font-feature-settings:"ss01","zero";}
+  .serif{font-family:var(--serif);}
+  .kicker{
+    font-family:var(--mono);
+    font-size:15px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  .kicker .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);vertical-align:middle;margin:-2px 12px 0 0;}
+  .rule{height:.5px;background:var(--rule);width:100%;}
+  .rule-2{height:.5px;background:var(--rule-2);width:100%;}
+  .vrule{width:.5px;background:var(--rule);align-self:stretch;}
+
+  .page{
+    width:100%;height:100%;
+    display:grid;
+    grid-template-rows:auto 1fr auto;
+    padding:64px 80px;
+    box-sizing:border-box;
+  }
+  .page-hd, .page-ft{
+    display:flex;align-items:center;justify-content:space-between;
+    font-family:var(--mono);font-size:14px;color:var(--muted);letter-spacing:.06em;
+    white-space:nowrap;gap:24px;
+  }
+  .page-hd > *, .page-ft > *{white-space:nowrap;}
+  .page-hd b{color:var(--ink);font-weight:600;}
+
+  .brand{display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:14px;letter-spacing:.04em;color:var(--ink);}
+  .brand .mark{
+    width:22px;height:22px;border-radius:6px;
+    background:
+      radial-gradient(circle at 30% 30%, #F2A93B 0 28%, transparent 30%),
+      radial-gradient(circle at 70% 65%, #E85D3A 0 34%, transparent 36%),
+      #0B0D0E;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);
+  }
+  [data-theme="dark"] .brand .mark{box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);}
+
+  /* corner ticks for editorial frame */
+  .ticks::before,.ticks::after,
+  .ticks > i:nth-child(1)::before,.ticks > i:nth-child(1)::after{
+    content:"";position:absolute;width:14px;height:14px;border-color:var(--rule);border-style:solid;border-width:0;
+  }
+  .ticks{position:absolute;inset:40px 56px;pointer-events:none;}
+  .ticks::before{left:-1px;top:-1px;border-left-width:.5px;border-top-width:.5px;}
+  .ticks::after{right:-1px;top:-1px;border-right-width:.5px;border-top-width:.5px;}
+  .ticks > i:nth-child(1){position:absolute;inset:0;}
+  .ticks > i:nth-child(1)::before{left:-1px;bottom:-1px;border-left-width:.5px;border-bottom-width:.5px;}
+  .ticks > i:nth-child(1)::after{right:-1px;bottom:-1px;border-right-width:.5px;border-bottom-width:.5px;}
+</style>
+</head>
+
+<body>
+
+<!-- Tweaks defaults — persisted via host -->
+<script>
+  window.__TWEAK_DEFAULTS__ = /*EDITMODE-BEGIN*/{
+    "dark": false,
+    "fontPairing": "inter-plex"
+  }/*EDITMODE-END*/;
+</script>
+
+<deck-stage width="1920" height="1080">
+
+  <!-- slides get mounted by React, in slide order, as direct children of deck-stage -->
+  <section data-label="Cover"       id="s01"></section>
+  <section data-label="The Problem" id="s02"></section>
+  <section data-label="The Idea"    id="s03"></section>
+  <section data-label="Architecture" id="s04"></section>
+  <section data-label="What It Gives You" id="s05"></section>
+  <section data-label="Drop-in"     id="s06"></section>
+  <section data-label="Questions"   id="s07"></section>
+
+</deck-stage>
+
+<script src="deck-stage.js"></script>
+
+<!-- React + Babel -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="slides/Slide01_Cover.jsx"></script>
+<script type="text/babel" src="slides/Slide02_Problem.jsx"></script>
+<script type="text/babel" src="slides/Slide03_Idea.jsx"></script>
+<script type="text/babel" src="slides/Slide04_Architecture.jsx"></script>
+<script type="text/babel" src="slides/Slide05_Pillars.jsx"></script>
+<script type="text/babel" src="slides/Slide06_DropIn.jsx"></script>
+<script type="text/babel" src="slides/Slide07_Questions.jsx"></script>
+<script type="text/babel" src="slides/app.jsx"></script>
+
+<script>
+(async () => {
+  try { await customElements.whenDefined('deck-stage'); } catch (e) {}
+  try { await document.fonts.ready; } catch (e) {}
+  setTimeout(() => { try { window.print(); } catch (e) {} }, 500);
+})();
+</script>
+</body>
+</html>
